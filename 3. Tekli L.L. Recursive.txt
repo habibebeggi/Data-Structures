@@ -1,0 +1,398 @@
+SORU: Başlangıç bloğu head olan 10 elemanlı linked list oluştur:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        Block bl = head;
+        Block bt = last;
+        Tekli(bl, bt);
+    }
+
+    static int sayac = -1;
+    static Block Tekli(Block bl, Block bt)
+    {
+        if (sayac == 10) return Tekli2(bl);
+        bl = new Block();
+        bl.data = sayac;
+        bl.next = bt;
+        bt = bl;
+        sayac++;
+        return Tekli(bl, bt);
+    }
+
+    static Block Tekli2(Block bl)
+    {
+        if (bl.next == null) return bl;
+        Console.WriteLine(bl.data);
+        return Tekli2(bl.next);
+    }
+}
+
+-------------------------------------------------------------------------
+SORU: Girilen adet sayısı kadar elemana sahip linked list oluşturan ve ekrana yazdıran kod:
+
+class Block
+{
+    public int data;
+    public Block next;
+}
+   
+static void linkedYaz(Block bt)
+{
+    if(bt== null) return;
+    Console.WriteLine(bt.data);
+    linkedYaz(bt.next);
+}
+
+static Block listeYaz(Block bt, int adt)
+{
+    if (adt < 0) return bt;
+    Block t= new Block();
+    t.data = adt;
+    t.next = bt;
+    return listeYaz(t, adt - 1);
+}
+
+-------------------------------------------------------------------------
+
+SORU: Listenin son elemanından sonra data değeri 100 olan blok ekle: 
+
+using System;
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static Block SonaEkle(Block bl, int val)
+    {
+        if (bl == null ) return null;
+        if (bl.next == null)
+        {
+            bl.next = new Block();
+            bl.next.data = val;
+            bl.next.next = null;
+            return bl.next;
+        }
+        return SonaEkle(bl.next,val);
+       
+    }
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 1; i <= 5; i++)
+        {
+            Block yeni = new Block();
+            yeni.data = i * 10;
+            yeni.next = null;
+
+            if (head == null)
+            {
+                head = yeni;
+                last = yeni;
+            }
+            else
+            {
+                last.next = yeni; // Son elemanın next'ine yeni elemanı ekle
+                last = yeni; // Son elemanı güncelle
+            }
+        }
+
+        SonaEkle(head, 100);
+        Console.WriteLine("Güncellenmiş Liste:");
+        Block current = head;
+        while (current != null)
+        {
+            Console.Write(current.data + " -> ");
+            current = current.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+----------------------------------------------------------------------------------
+SORU: Bir bağlı listenin tüm elemanlarını 3 boyutlu bir diziye ekleyen/kopyalayan kod:
+
+diziyeYaz: Doğrudan bağlantılı listedeki verileri üç boyutlu bir diziye eklemek için kullanılır. 
+Basit ve sadece yazma işlevine odaklanır.
+
+ListeKopyala: Daha karmaşık bir işlemi temsil edebilir. 
+Mevcut dizi verisini okumak ve ardından bu veriyi liste verisiyle değiştirmek gibi bir amaç güdüyor olabilir. 
+Bu genellikle var olan diziyi güncelleme veya karşılaştırma işlemleri için yararlıdır.
+
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block(int data)
+        {
+            this.data = data;
+            this.next = null;
+        }
+    }
+   
+    static void diziyeYaz(int[,,] x, Block bt, int a, int b, int c)
+    {
+        if(bt== null) return;
+        if (c == 3)
+        {
+            c = 0;
+            b++;
+            if (b == 3)
+            {
+                b = 0;
+                a++;
+            }
+        }
+        x[a, b, c] = bt.data;
+        Console.WriteLine(x[a,b,c]);
+        diziyeYaz(x, bt.next, a, b, c + 1);
+
+    }
+
+    static void ListeKopyala(int[,,] x, int a, int b, int c, Block t)
+    {
+        if(t== null) return;
+        Console.WriteLine(x[a, b, c]);
+        x[a,b,c] = t.data;
+        c++;
+        if (c == 3)
+        {
+            c = 0;
+            b++;
+            if (b == 3)
+            {
+                b = 0; 
+                a++;
+            }
+        }
+
+        ListeKopyala(x, a, b, c, t.next);
+    }
+    static void Main(string[] args)
+    {
+        int[,,] x = new int[3, 3, 3];
+        int[,,] y= new int[4,4,4];
+
+        Block head = new Block(4);
+        head.next = new Block(41);
+        head.next.next = new Block(51);
+
+        diziyeYaz(x, head, 0, 0, 0);
+        Console.WriteLine("şimdi liste");
+        ListeKopyala(x, 0, 0, 0, head);
+    }
+}
+----------------------------------------------------------------------------------
+
+SORU: Listenin son elemanını silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last= null;
+       for (int i = 0;i<5; i++)
+        {
+            Block yeni=new Block();
+            yeni.data = i;
+            yeni.next = null;
+            if(head == null) { head = yeni; last = yeni; }
+            else { last.next = yeni; last = yeni; }
+        }
+        Yazdir(head);
+        Console.WriteLine("Baslangıc yazdıırldı");
+        head = SonElemanSil(head);
+        Yazdir(head);
+    }
+
+    static Block SonElemanSil(Block bl)
+    {
+        if(bl == null) return null;
+        if(bl.next == null) return null;
+        bl.next=SonElemanSil(bl.next);
+        return bl;
+    }
+
+    static void Yazdir(Block bl)
+    {
+       while(bl != null)
+        {
+            Console.Write(bl.data + " -> ");
+            bl = bl.next;
+        }
+    }
+  
+}
+
+----------------------------------------------------------------------------------------
+
+SORU: Data değeri girilen bloğu silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last= null;
+
+       for (int i = 0;i<6; i++)
+        {
+            Block yeni=new Block();
+            yeni.data = i;
+            yeni.next = null;
+            if(head == null) { head = yeni; last = yeni; }
+            else { last.next = yeni; last = yeni; }
+        }
+        Console.WriteLine("Baslangıc yazdırıldı");
+        Yazdir(head);
+
+        head = SonElemanSil(head,5);
+        Yazdir(head);
+    }
+
+    static Block SonElemanSil(Block bl, int value)
+    {
+        if(bl == null) return null;
+        if(bl.data == value) return bl.next;
+        bl.next=SonElemanSil(bl.next,value);
+        return bl;
+    }
+
+    static void Yazdir(Block bl)
+    {
+       while(bl != null)
+        {
+            Console.Write(bl.data + " -> ");
+            bl = bl.next;
+        }
+    }
+  
+}
+
+------------------------------------------------------------------------------------
+
+SORU: Data değeri girilen bloktan sonra yeni blok ekleme:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static Block Ekle(Block bl, int val, int val2)
+    {
+        if(bl== null) return null;
+        if (bl.data == val)
+        {
+            Block bX = new Block();
+            bX.data = val2;
+            bX.next = bl.next;
+            bl.next = bX;
+            bX.next=Ekle(bX.next, val, val2);
+        }
+        else bl.next=Ekle(bl.next,val, val2);
+        return bl;
+    }
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 1; i <= 5; i++)
+        {
+            Block yeni = new Block();
+            yeni.data = i * 10;
+            yeni.next = null;
+
+            if (head == null)
+            {
+                head = yeni;
+                last = yeni;
+            }
+            else
+            {
+                last.next = yeni; // Son elemanın next'ine yeni elemanı ekle
+                last = yeni; // Son elemanı güncelle
+            }
+        }
+      
+        Block current = Ekle(head, 30, 7890);
+        Console.WriteLine("Güncellenmiş Liste:");
+        while (current != null)
+        {
+            Console.Write(current.data + " -> ");
+            current = current.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+------------------------------------------------------------------------------------
+
+SORU: Recursive olarak liste oluşturan ve ekrana basan kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void ListeGoruntule(Block bt)
+    {
+        if(bt== null) return;
+        Console.WriteLine(bt.data);
+        ListeGoruntule(bt.next);
+    }
+
+    static Block ListeOlustur(Block bt, int adt)
+    {
+        if (adt < 0) return bt;
+        Block t = new Block();
+        t.data = adt;
+        t.next = bt;
+        return ListeOlustur(t, adt - 1);
+    }
+
+    static void Main(string[] args)
+    {
+        Block bas = null;
+        bas = ListeOlustur(bas, 5);
+        ListeGoruntule(bas);
+    }
+}
+
+--------------------------------------------------------------------------------------

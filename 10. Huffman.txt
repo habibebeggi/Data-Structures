@@ -1,0 +1,220 @@
+SORU: Girilen karakter ve frekans bilgileri ile bir Huffman ağacı oluşturup bu ağacın her bir 
+yaprak düğümüne karşılık gelen Huffman kodlarını belirler ve ağacı ekrana yazdıran kodu yazınız.
+
+class Program
+{
+    class BTree
+    {
+        public int data;
+        public char ch;
+        public string huffman;
+        public BTree left, right;
+    }
+
+    static void HuffmanTreeOlustur(ref BTree[] bt)
+    {
+        while (bt.Length > 1)
+        {
+            Array.Sort(bt, (x, y) => x.data.CompareTo(y.data)); // Her işlemde tekrar sıralama yapıyoruz
+            BTree b = new BTree();
+            b.left = bt[0];
+            b.right = bt[1];
+            b.data = bt[0].data + bt[1].data;
+
+            bt = bt.Skip(2).ToArray(); // İlk iki öğeyi birleştirip geri kalan öğeleri al
+            bt = bt.Prepend(b).ToArray(); // Yeni düğümü başa ekle
+        }
+    }
+
+    static void HuffmanStrYaz(BTree bt, string yon)
+    {
+        if (bt == null) return;
+
+        if (bt.left == null && bt.right == null)
+        {
+            bt.huffman = yon;
+        }
+
+        HuffmanStrYaz(bt.left, yon + "0");
+        HuffmanStrYaz(bt.right, yon + "1");
+    }
+
+    static void Yazdir(BTree bt)
+    {
+        if (bt == null) return;
+
+        if (bt.ch != '\0')
+            Console.WriteLine($"Karakter: {bt.ch}, Veri: {bt.data}, Huffman Kodu: {bt.huffman}");
+
+        Yazdir(bt.left);
+        Yazdir(bt.right);
+    }
+
+    static void Main(string[] args)
+    {
+        BTree[] huffmanDizi = new BTree[5];
+
+        huffmanDizi[0] = new BTree() { data = 1, ch = 'A' };
+        huffmanDizi[1] = new BTree() { data = 2, ch = 'B' };
+        huffmanDizi[2] = new BTree() { data = 3, ch = 'C' };
+        huffmanDizi[3] = new BTree() { data = 4, ch = 'D' };
+        huffmanDizi[4] = new BTree() { data = 5, ch = 'E' };
+
+        HuffmanTreeOlustur(ref huffmanDizi);
+        HuffmanStrYaz(huffmanDizi[0], "");
+
+        Console.WriteLine("Huffman Ağaç yapısı:");
+        Yazdir(huffmanDizi[0]);
+    }
+}
+--------------------------------------------------------------------------------------
+SORU: Huffman agacı oluşturup karakterleri ve frekanslarını ekrana yazdıran kod:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public char ch;
+        public string hufman;
+        public Btree left;
+        public Btree right;
+    }
+
+    static Btree local(Btree a, Btree b)
+    {
+        Btree bt = new Btree();
+        bt.data = a.data + b.data;
+        bt.left = a;
+        bt.right = b;
+        return bt;
+    }
+
+    static void tree(List<Btree> bt)
+    {
+        while (bt.Count > 1)
+        {
+            bt.Sort((x, y) => x.data.CompareTo(y.data));
+
+            Btree a = bt[0];
+            Btree b = bt[1];
+
+            Btree merged = local(a, b);
+            bt.RemoveAt(0);
+            bt.RemoveAt(0);
+            bt.Add(merged);
+        }
+    }
+
+    static void assignCodes(Btree bt, string code)
+    {
+        if (bt == null) return;
+
+        if (bt.left == null && bt.right == null)
+        {
+            bt.hufman = code;
+            Console.WriteLine("{0} -> {1}", bt.ch, bt.hufman);
+        }
+
+        assignCodes(bt.left, code + "0");
+        assignCodes(bt.right, code + "1");
+    }
+
+    static void Main(string[] args)
+    {
+        char[] characters = { 'A', 'B', 'C', 'D', 'E', 'F' };
+        int[] frequencies = { 5, 9, 12, 13, 16, 45 };
+
+        List<Btree> bt = new List<Btree>();
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            bt.Add(new Btree
+            {
+                data = frequencies[i],
+                ch = characters[i],
+                hufman = ""
+            });
+        }
+
+        tree(bt);
+
+        Console.WriteLine("Huffman Kodları:");
+        assignCodes(bt[0], "");
+    }
+}
+
+-------------------------------------------------------------------------
+SORU: Huffman Tree oluşturan kod:
+
+class Program
+{
+    class btree
+    {
+        public int data;
+        public int ch;
+        public string huffman;
+        public btree left;
+        public btree right;
+    }
+
+    static void huffmantreeolustur(btree[] bt)
+    {
+        if (bt[1] == null) return;
+
+        btree b = new btree();
+        b.left = bt[0];
+        b.right = bt[1];
+        b.data = bt[0].data + bt[1].data;
+
+        bt[0] = b;
+        bt[1] = null;
+        Array.Sort(bt, (object x, object y) =>
+        {
+            int a = 0;
+            if (x == null && y == null) return 0;
+            if (x == null) return 1; if (y == null) return -1;
+
+            if (((btree)x).data < ((btree)y).data) a = -1;
+            if (((btree)x).data > ((btree)y).data) a = 1;
+            return a;
+        });
+        huffmantreeolustur(bt);
+    }
+
+    static void huffmanstryaz(btree bt, string yon)
+    {
+        if (bt == null) return;
+
+        if (bt.left == null && bt.right == null)
+        {
+            bt.huffman = yon;
+            Console.WriteLine("{0} -> {1}", (char)bt.ch, bt.huffman);
+        }
+
+        huffmanstryaz(bt.left, yon + "0");
+        huffmanstryaz(bt.right, yon + "1");
+    }
+
+    static void Main(string[] args)
+    {
+        char[] characters = { 'A', 'B', 'C', 'D', 'E', 'F' };
+        int[] frequencies = { 5, 9, 12, 13, 16, 45 };
+
+        btree[] bt = new btree[characters.Length];
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            bt[i] = new btree
+            {
+                data = frequencies[i],
+                ch = characters[i]
+            };
+        }
+
+        huffmantreeolustur(bt);
+
+        Console.WriteLine("Huffman Kodları:");
+        huffmanstryaz(bt[0], "");
+    }
+}

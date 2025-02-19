@@ -1,0 +1,820 @@
+Sadece dizilerle implement edilebilirler. Dictionary' e benzer. keyler unique olurken valueler aynı olabilir.
+hashing mantıgı:
+veri gelir, gelen veri üzerinde bir dizi işlem uygulanır, diziye ya da depolama alanı olarak kullanılacak baska bir 
+veri yapısına aktarılır. Amaç gelen veriyi dengeli bir biçimde dağıtmaktır.
+
+Hashingin bize sağladığı en büyük avantaj hızdır. Şöyleki 100 elemanlı bir dizinin 5. elemanına ulaşmakla;
+1.000.000 elemanlı bir dizinin 5. elemanına ulaşmak aynı sürede olduğu için hızımız sonsuzdur. 
+Yani verinin büyüklüğü ne olursa olsun verilere ulaşmanın bize olan maliyeti hiç değişmiyor.
+Sadece search algoritmalarında değil aynı zamanda kısıtlı alanı olan ve veri girişi yapılan işlemlerde de hashing kullanılabiliyor.
+
+Yani hashing denince aklımıza gelen şey veriyi indise dönüştürüp dizinin o indisini değiştiriyoruz.
+Hashing sadece bir dizi olmak zorunda değil aynı zamanda bir metod da olabilir;
+
+En büyük sıkıntılarından biri birbirine benzeyen bir veri hash edildiğinde aynı değeri vermesi.
+Yani yukarıdaki isim örneğinde;
+  ali isminin karşılığını 26 olarak bulduk peki " ila " isminde biri gelse yine 26 değerini bulacağız ve dizinin aynı indisine atamayamayacağımızdan veri kaybı yaşayacağız.
+  Bunun adına collision yani çakışma, çarpışma denir.
+ collisionun çözümüne birçok yaklaşım vardır. Bunlardan üçü şu şekildedir;
+        
+        1-)Perfect hashing yani bir yerine iki hash fonksiyonu kullanarak collisionun önüne geçmek
+        2-)Bir diğer çözümü çakışan verileri linked liste aktarmak.
+        3-)Sık kullanılan başka bir çözüm ise çakışan verileri dizide boş bulunan en yakın yere aktarmak.
+
+-------------------------------------------------------------------------------------------------
+SORU: Data olarak KKU 2020 girişli BM öğrenci numaralarını alan ve hash tablosu oluşturan kod:
+Diyelim ki 2020 yılında okula girmiş bilgisayar mühendisliği öğrencilerinin, öğrenci numaraları üzerinden verilerini gireceğiz.
+Bildiğiniz üzere numaralarını şu şekilde; 200205XXX 
+**Hashing ile öğrenci numarasının sadece son 3 hanesine göre işlem yaptık, bu alandan çok büyük atsarruf etmemizi sağladı.
+
+class Program
+{
+    static int hashFunction(int data)
+    {
+        return (data - 200205000)%100;
+    }
+
+    static int[] hash = new int[100];
+    static void hashYaz(int data)
+    {
+        int indis=hashFunction(data);
+        if(hash[indis] == 0) hash[indis] = data;
+        else Console.WriteLine("Çakışma: Veri eklenemedi ({0})", data);
+    }
+    static int hashSearch(int data)
+    {
+        int indis=hashFunction(data);
+        if (hash[indis] == data) return 1;
+        else return 0;
+    }
+    static void Main(string[] args)
+    {
+        hashYaz(200205714);
+        hashYaz(200205170);
+        hashYaz(200205871);
+        Console.WriteLine("200205714 arama sonucu: "+hashSearch(200205714));
+        Console.WriteLine("200205102 arama sonucu: "+hashSearch(200205170));
+        Console.WriteLine("200205871 arama sonucu: "+hashSearch(200205871));
+    }
+}
+--------------------------------------------------------------------------------- 
+SORU: Hashing' de çakışan verileri dizide boş bulunan en yakın yere aktarma:
+
+using System;
+
+class Program
+{
+    static int hashFunction(int data)
+    {
+        return (data - 200205000) % 100;
+    }
+
+    static int[] hash = new int[100];
+    static void hashYaz(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == 0) hash[indis] = data;
+        else
+        {
+            int i = (indis + 1) % hash.Length;
+            while (hash[i] != 0) i = (i + 1) % hash.Length;
+            hash[i] = data;
+        }
+    }
+
+    static int search(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == data) return 1;
+        else
+        {
+            int i = (indis + 1) % hash.Length;
+            while (hash[i] != 0)
+            {
+                if (hash[i] == data) return 1;
+                i = (i + 1) % hash.Length;
+            }
+            return 0;
+        }
+    }
+    static void Main(string[] args)
+    {
+        hashYaz(200205714);
+        hashYaz(200205170);
+        hashYaz(200205871);
+        hashYaz(200205202);
+
+        Console.WriteLine("200205714 arama sonucu: " + search(200205714));
+        Console.WriteLine("200205102 arama sonucu: " + search(200205102));
+        Console.WriteLine("200205871 arama sonucu: " + search(200205871));
+        Console.WriteLine("200205202 arama sonucu: " + search(200205202));
+    }
+}
+
+----------------------------------------------------------------------------
+SORU: Bu problemin diğer çözümü:
+
+class Program
+{
+    static int hashFunction(int data)
+    {
+        return (data - 200205000) % 100;
+    }
+
+    static int[] hash = new int[100];
+    static void hashYaz(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == 0) hash[indis] = data;
+        else
+        {
+            for (int i = 0; i < hash.Length; i++)
+            {
+                if (hash[i] == 0) hash[i] = data; break;
+            }
+        }
+    }
+    static int search(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == 0) return 0;
+        int bulundu = 0;
+        if (hash[indis] == data) return 1;
+        else
+        {
+            for (int i = 0; i < hash.Length; i++)
+            {
+                if (hash[i] == data) bulundu = 1; break;
+            }
+            return bulundu;
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        hashYaz(200205714);
+        hashYaz(200205170);
+        hashYaz(200205871);
+        hashYaz(200205202);
+
+        Console.WriteLine("200205714 arama sonucu: " + search(200205714));
+        Console.WriteLine("200205102 arama sonucu: " + search(200205102));
+        Console.WriteLine("200205871 arama sonucu: " + search(200205871));
+        Console.WriteLine("200205202 arama sonucu: " + search(200205202));
+    }
+}
+-------------------------------------------------------------------------------
+SORU: Hashing' de  çakışan verileri linked liste aktarma:
+
+using System;
+using System.Linq.Expressions;
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static int hashFunction(int data)
+    {
+        return (data - 200205000) % 100;
+    }
+
+    static Block[] coll = new Block[100];
+    static int[] hash=new int[100];
+    static void hashYaz(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == 0) hash[indis] = data;
+        else
+        {
+            Block bl = new Block();
+            bl.data = data;
+            if (coll[indis] != null) { coll[indis].prev = bl; }
+            bl.next = coll[indis];
+            coll[indis] = bl;
+        }
+    }
+
+    static int search(int data)
+    {
+        int indis= hashFunction(data);
+        if (hash[indis] == data) return 1;
+        Block temp = coll[indis];
+        while(temp!= null)
+        {
+            if(temp.data == data) return 1;
+            temp = temp.next;
+        }
+        return 0;
+    }
+    static void Main(string[] args)
+    {
+        hashYaz(200205714);
+        hashYaz(200205170);
+        hashYaz(200205871);
+        hashYaz(200205202);
+
+        Console.WriteLine("200205714 arama sonucu: " + search(200205714));
+        Console.WriteLine("200205102 arama sonucu: " + search(200205102));
+        Console.WriteLine("200205871 arama sonucu: " + search(200205871));
+        Console.WriteLine("200205202 arama sonucu: " + search(200205202));
+    }
+}
+----------------------------------------------------------------------------
+** Son olarak dizinin indislerine göre aktardığımız veriyi okuduktan sonran silmemiz gerekebilir. 
+Burada yine collision'un başka bir sıkıntısını göreceğiz.Yani şöyle; eğer collision olmuş bir veri silinirse 
+ve collision 3. veya 2. çözüme göre implemente edilmişse diğer veriler sahipsiz kalır. Bunu engellemek için ya 
+search algoritmamızı değiştireceğiz yada silinen yere collison olmuş veriyi yazmam lazım. Atilla hoca bu sorunu 2. yoldan çözdü. **
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static int hashFunction(int data)
+    {
+        return (data - 200205000) % 100;
+    }
+
+    static Block[] coll = new Block[100];
+    static int[] hash=new int[100];
+    static void hashYaz(int data)
+    {
+        int indis = hashFunction(data);
+        if (hash[indis] == 0) hash[indis] = data;
+        else
+        {
+            Block bl = new Block();
+            bl.data = data;
+            if (coll[indis] != null) { coll[indis].prev = bl; }
+            bl.next = coll[indis];
+            coll[indis] = bl;
+        }
+    }
+
+    static int Search(int data)
+    {
+        int indis= hashFunction(data);
+        if (hash[indis] == data) return 1;
+        Block temp = coll[indis];
+        while(temp!= null)
+        {
+            if(temp.data == data) return 1;
+            temp = temp.next;
+        }
+        return 0;
+    }
+
+    static void Delete(int data)
+    {
+        int indis = hashFunction(data);
+        if(hash[indis] ==data)
+        {
+            if (coll[indis] != null)
+            {
+                hash[indis] = coll[indis].data;
+                coll[indis] = coll[indis].next;
+               coll[indis].prev = null;
+            }
+            else hash[indis] = 0;
+        }
+        else
+        {
+            Block bl = coll[indis];
+            while(bl!= null)
+            {
+                if(bl.data == data)
+                {
+                    if(bl.prev!=null) bl.prev.next = bl.next;
+                    if(bl.next!=null) bl.next.prev = bl.prev;
+                    break;
+                }
+                bl = bl.next;
+                
+            }
+        }
+    }
+    static void Main(string[] args)
+    {
+        hashYaz(200205714);
+        hashYaz(200205170);
+        hashYaz(200205871);
+        hashYaz(200205202);
+
+        Console.WriteLine("200205714 arama sonucu: " + Search(200205714));
+        Console.WriteLine("200205170 arama sonucu: " + Search(200205170));
+        Console.WriteLine("200205871 arama sonucu: " + Search(200205871));
+        Console.WriteLine("200205202 arama sonucu: " + Search(200205202));
+
+        Delete(200205170);
+        Console.WriteLine("\n200205170 silindikten sonra:");
+        Console.WriteLine("200205170 arama sonucu: " + Search(200205170)); 
+    }
+}
+--------------------------------------------------------------------------------------------
+** Delete metodu şu şekilde de tanımlanır:
+static void Delete(int data)
+{
+    int indis = hashFunction(data);
+    if(hash[indis] ==data)
+    {
+        if (coll[indis] != null)
+        {
+            hash[indis] = coll[indis].data;
+            coll[indis] = coll[indis].next;
+        }
+        else hash[indis] = 0;
+    }
+    else
+    {
+        Block bl = coll[indis];
+        while(bl.next!= null)
+        {
+            if (bl.next.data == data)
+            {
+                bl.next = bl.next.next;
+            }
+            bl = bl.next;
+        }
+    }
+}
+-----------------------------------------------------------------------------------------
+SORU: String tabanlı bir hash tablosu oluşturarak arama ve ekleme işlemleri yapan kod:
+
+class Program
+{
+    static string[] hash = new string[100];
+    static int hashFunction(string s)
+    {
+        int value = 0;
+        for (int i = 0; i < s.Length; i++)
+        {
+            value = value + (byte)s[i];
+        }
+        return value % 100;
+    }
+    static int hashFuncINT(int s)
+    {
+        return s % 100;
+    }
+
+    static bool Find(string s)
+    {
+        int indis = hashFunction(s);
+        if (hash[indis] == s) return true;
+        for (int i = 0; i < hash.Length - 1; i++)
+        {
+            if (hash[indis + i % hash.Length] == s) return true;
+        }
+        return false;
+    }
+
+    static void Ekle(string s)
+    {
+        int indis = hashFunction(s);
+        if (hash[indis] == null) { hash[indis] = s; return; }
+        for (int i = 1; i < hash.Length - 1; i++)
+        {
+            if (hash[indis + i % hash.Length] == null)
+            {
+                hash[indis + i % hash.Length] = s;
+                return;
+            }
+        }
+    }
+    static void Main(string[] args)
+    {
+        Ekle("AYŞE");
+        Ekle("AHMET");
+        Ekle("ALİ");
+        Ekle("İLA");
+        Ekle("İAL");
+        Console.WriteLine(Find("ALİ"));
+        Console.WriteLine(Find("İLA"));
+        Console.WriteLine(Find("İAL"));
+        Console.WriteLine(Find("AYŞE"));
+        Console.WriteLine(Find("AHMET"));
+    }
+}
+
+------------------------------------------------------------------------------
+SORU: Hash tablosu oluşturup çakışmaları linked listle çözen yapı: (birden fazla classla)
+
+class Program
+{
+    class Node
+    {
+        public int key;
+        public string isim;
+        public Node next;
+        public Node()
+        {
+            this.next = null;
+        }
+        public Node(int key, string isim)
+        {
+            this.key = key;
+            this.isim = isim;
+            this.next = null;
+        }
+    }
+    class HashTable
+    {
+        public int size;
+        Node[] nodes;
+        public HashTable(int size)
+        {
+            this.size = size;
+            nodes=new Node[size];
+            for(int i=0; i<size; i++)
+            {
+                nodes[i]  = new Node();
+            }
+        }
+        public void Ekle(int key, string isim)
+        {
+            int index=key % size;
+            Node n=new Node(key,isim);
+            if (nodes[index]==null) nodes[index]=n;
+            else
+            {
+                Node c=nodes[index];
+                while(c.next!=null)
+                {
+                    c=c.next;
+                }c.next=n;
+            }
+            Console.WriteLine($"{isim} eklendi (index: {index})");
+        }
+        static void Main(string[] args)
+        {
+            HashTable ht = new HashTable(5);
+            ht.Ekle(0, "ayşe");
+            ht.Ekle(1, "fatma");
+            ht.Ekle(2, "huseyin");
+            ht.Ekle(3, "hasan");
+            ht.Ekle(5, "mehmet");
+        }
+    }
+}
+----------------------------------------------------------------------------
+SORU: string veri ile hash table oluşturma ve yönetme:
+
+using System;
+
+class Program
+{
+    static string[,] hashDizi = new string[100, 4];
+    static string[] coll = new string[20];
+    static int collIndis = -1;
+
+    static int hashFunction(string st)
+    {
+        int ind = 0;
+        for (int i = 0;i<st.Length;i++)
+        {
+            ind += st[i] - '0';
+        }
+        ind=ind%hashDizi.Length;
+        return ind;
+    }
+
+    static void HashEkle(string st)
+    {
+        int ind=hashFunction(st);
+        if (hashDizi[ind, 0] != null)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (coll[i] == null)
+                {
+                    hashDizi[ind, i] = st;
+                    break;
+                }
+            }
+        }
+        else hashDizi[ind, 0] = st;
+    }
+
+    static int hashSearch(string st)
+    {
+        int ind = hashFunction(st);
+        int bl = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if (hashDizi[ind, i] == st) { bl = 1; break; }
+        }
+        return bl;
+    }
+
+    static void HashDelete(string st)
+    {
+        int ind = hashFunction(st);
+        for (int i = 0;i < 4; i++)
+        {
+            if (hashDizi[ind, i] == st)
+            {
+                hashDizi[ind, i] = null;
+                break;
+            }
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        HashEkle("12345678902");
+        Console.WriteLine(hashSearch("12345678902"));
+
+        HashEkle("22345678902");
+        Console.WriteLine(hashSearch("22345678902"));
+
+        HashEkle("32345678902");
+        Console.WriteLine(hashSearch("32345678902"));
+
+        Console.WriteLine("********************");
+
+        HashEkle("12345678902");    // indis  78 olsun
+        HashEkle("12345678903");
+        HashEkle("12345678913");
+        HashEkle("12345678920");
+
+        Console.WriteLine(hashSearch("12345678920"));
+        Console.WriteLine(hashSearch("12345678903"));
+        Console.WriteLine(hashSearch("1234567890213"));
+        Console.WriteLine(hashSearch("12345678902"));
+
+        HashDelete("12345678902");
+        HashDelete("12345678903");
+        HashDelete("12345678913");
+        HashDelete("12345678920");
+    }
+}
+----------------------------------------------------------------------------------------
+SORU:  Linked listle hash table oluşturan kod:
+
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    class Block
+    {
+        public string data;
+        public Block next;
+        public Block prev;
+    }
+
+    static string[] HASH = new string[100];
+    static string[] dict = new string[100];
+
+    Dictionary<int,string> dt= new Dictionary<int,string>();
+
+    static Block[] hashLinked = new Block[100];
+
+    static string[] hashColl = new string[100];
+    static int hashCollIndis = -1;
+    
+    static int HashFunc(string s)
+    {
+        int ind = 0;
+        for (int i = 0;i<s.Length;i++)
+        {
+            ind += s[i] - '0';
+        }
+        ind=ind%HASH.Length;
+        return ind;
+    }
+
+    static void HashEkle(string st)
+    {
+       int ind=HashFunc(st);
+        Block bl=new Block();
+        bl.data = st;
+        bl.next = hashLinked[ind];
+        if(hashLinked[ind] != null) hashLinked[ind].prev = bl;
+        hashLinked[ind] = bl;
+    }
+
+    static int HashSearch(string st)
+    {
+        int ind = HashFunc(st);
+        int bulundu = 0;
+        Block tmp=hashLinked[ind];
+        while(tmp!=null)
+        {
+            if (tmp.data == st)
+            {
+                bulundu = 1; break;
+            }
+        }
+        return bulundu;
+    }
+
+    static void HashDelete(string st)
+    {
+        int ind= HashFunc(st);
+        if (hashLinked[ind] == null) return;
+        Block tmp=hashLinked[ind];
+        if (tmp.data == st)
+        {
+            hashLinked[ind] = hashLinked[ind].next;
+            return;
+        }
+        while(tmp!=null)
+        {
+            if(tmp.data == st)
+            {
+                if(tmp.next == null)
+                {
+                    tmp.prev.next = null;
+                    break;
+                }
+                tmp.next.prev = tmp.prev;
+                tmp.prev.next = tmp.next;
+                break;
+            }
+            tmp = tmp.next;
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        HashEkle("apple");
+        HashEkle("banana");
+        HashEkle("grape");
+
+        // Arama işlemleri
+        Console.WriteLine($"apple bulundu: {HashSearch("apple")}");
+        Console.WriteLine($"banana bulundu: {HashSearch("banana")}");
+        Console.WriteLine($"grape bulundu: {HashSearch("grape")}");
+        Console.WriteLine($"orange bulundu: {HashSearch("orange")}");
+
+        // Silme işlemleri
+        HashDelete("banana");
+        Console.WriteLine($"banana silindi.");
+
+        // Silinen veriyi tekrar arama
+        Console.WriteLine($"banana bulundu: {HashSearch("banana")}");
+
+        // Diğer verileri tekrar arama
+        Console.WriteLine($"apple bulundu: {HashSearch("apple")}");
+        Console.WriteLine($"grape bulundu: {HashSearch("grape")}");
+    }
+}
+-------------------------------------------------------------------------------
+SORU: hashtable olusturan cakısam olursa baglı listeye ekleyen kod:
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static int[] Hash = new int[100];
+    static int[] hashColl = new int[100];
+    static Block[] hashLinked = new Block[100];
+
+    static int HashFunc(int data)
+    {
+        return data % Hash.Length;
+    }
+
+    static void Add(int data)
+    {
+        int ind = HashFunc(data);
+
+        if (Hash[ind] == 0)
+        {
+            Hash[ind] = data;
+            return;
+        }
+
+        if (Hash[ind] == data) return;
+
+        Block newBlock = new Block();
+        newBlock.data = data;
+        newBlock.next = hashLinked[ind];
+        if (hashLinked[ind] != null)
+            hashLinked[ind].prev = newBlock;
+        hashLinked[ind] = newBlock;
+    }
+
+    static bool SearchLinkedHash(int data)
+    {
+        int ind = HashFunc(data);
+        if (hashLinked[ind] == null && Hash[ind] != data) return false;
+
+        if (Hash[ind] == data) return true;
+
+        Block tmp = hashLinked[ind];
+        while (tmp != null)
+        {
+            if (tmp.data == data) return true;
+            tmp = tmp.next;
+        }
+        return false;
+    }
+
+    static int HashSearch(int data)
+    {
+        int ind = HashFunc(data);
+        if (Hash[ind] == data) return ind;
+
+        Block tmp = hashLinked[ind];
+        while (tmp != null)
+        {
+            if (tmp.data == data) return ind;
+            tmp = tmp.next;
+        }
+        return -1;
+    }
+
+    static void HashDelete(int data)
+    {
+        int ind = HashFunc(data);
+        if (Hash[ind] == data)
+        {
+            Hash[ind] = 0;
+            hashColl[ind] = 0;
+            return;
+        }
+
+        Block tmp = hashLinked[ind];
+        while (tmp != null)
+        {
+            if (tmp.data == data)
+            {
+                if (tmp.prev != null) tmp.prev.next = tmp.next;
+                else hashLinked[ind] = tmp.next;
+
+                if (tmp.next != null) tmp.next.prev = tmp.prev;
+                break;
+            }
+            tmp = tmp.next;
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        Add(23);
+        Add(35);
+        Add(45);
+        Add(23);
+        Add(125);
+
+        Console.WriteLine("Arama (23): " + (SearchLinkedHash(23) ? "Bulundu" : "Bulunamadı"));
+        Console.WriteLine("Arama (35): " + (SearchLinkedHash(35) ? "Bulundu" : "Bulunamadı"));
+        Console.WriteLine("Arama (100): " + (SearchLinkedHash(100) ? "Bulundu" : "Bulunamadı"));
+
+        Console.WriteLine("HashSearch (45): " + HashSearch(45));
+        Console.WriteLine("HashSearch (125): " + HashSearch(125));
+
+        Console.WriteLine("Silme işlemi (23) yapılıyor...");
+        HashDelete(23);
+        Console.WriteLine("Arama (23): " + (SearchLinkedHash(23) ? "Bulundu" : "Bulunamadı"));
+
+        Console.WriteLine("Silme sonrası 125 ekleniyor...");
+        Add(125);
+        Console.WriteLine("HashSearch (125): " + HashSearch(125));
+    }
+}
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

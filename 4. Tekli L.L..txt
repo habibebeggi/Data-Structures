@@ -1,0 +1,597 @@
+SORU: 10 blokluk tekli linked list oluşturup değer atayınız.
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        for (int i = 0; i < 10; i++)
+        {
+            Block temp = new Block();
+            temp.data = i;
+            temp.next = null;
+            if (head == null) { head = temp; }
+            else { last.next = temp; }
+            last = temp;
+            Console.WriteLine(temp.data);
+        }
+    } 
+}
+
+----------------------------------------------------------------------
+
+SORU: Yukarıdaki kodu if kullanmadan optimize edip yeniden yazınız:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        for (int i = 0; i < 10; i++)
+        {
+            head = new Block();
+            head.data = i;
+            head.next = last;
+            last = head;
+        }
+        Block temp = head;
+        while (temp != null)
+        {
+            Console.WriteLine(temp.data);
+            temp = temp.next;
+        }
+    }
+}
+
+------------------------------------------------------------------------
+
+SORU:  Başlangıç bloğu head olan 10'luk linked listin data değeri
+ çift olanların değerlerini ekrana bastıran kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        for (int i = 0; i < 10; i++)
+        {
+            head = new Block();
+            head.data = i;
+            head.next = last;
+            last = head;
+        }
+        Block temp = head;
+        while (temp != null)
+        {
+            if (temp.data % 2 == 0)
+            {
+                Console.WriteLine(temp.data);
+            }
+            temp = temp.next;
+        }
+    }
+}
+
+---------------------------------------------------------------------
+
+SORU: Listenin en başına data değeri -1 olan blok ekleyiniz:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block bl = head;
+        bl=new Block();
+        bl.data = -1;
+        bl.next = head;
+        head = bl;
+    }
+}
+
+-------------------------------------------------------------------
+
+SORU: Listenin son elemanından sonra data değeri 100 olan blok ekleyiniz:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block temp = new Block();
+        temp.data = 100;
+        temp.next = null;
+        Block bl = head;
+        while(bl.next != null)
+        {
+            bl = bl.next;
+        }
+        bl.next = temp;
+    }
+}
+
+-----------------------------------------------------------------------
+
+SORU: Listenin ilk elemanını silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        head = head.next;
+    }
+}
+
+-----------------------------------------------------------------------
+
+SORU: Listenin son elemanını silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+
+        Block bl = head;
+        while(bl.next.next != null)
+        {
+            bl = bl.next;
+        }
+        bl.next = null;
+    }
+}
+
+-------------------------------------------------------------------
+
+SORU: Data değeri 5 olan bloğu silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block bl = head;
+        while(bl.next != null)
+        {
+            if(bl.next.data == 5)
+            {
+                bl.next = bl.next.next;
+            }
+            bl = bl.next;
+        }
+    }
+}
+
+--------------------------------------------------------------------
+
+SORU: Data değeri 5 olan bloktan sonra data değeri 100 olan bloğu ekleyen
+ ve listeyi ekrana yazdıran kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 1; i <= 10; i++)
+        {
+            Block newBlock = new Block
+            {
+                data = i,
+                next = null
+            };
+
+            if (head == null)
+            {
+                head = newBlock;
+            }
+            else
+            {
+                last.next = newBlock;
+            }
+
+            last = newBlock;
+        }
+
+        Block temp = head;
+        while (temp != null)
+        {
+            if (temp.data == 5)
+            {
+                Block newBlock = new Block
+                {
+                    data = 100,
+                    next = temp.next
+                };
+                temp.next = newBlock;
+                break;
+            }
+            temp = temp.next;
+        }
+
+        temp = head;
+        while (temp != null)
+        {
+            Console.Write(temp.data + " -> ");
+            temp = temp.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+--------------------------------------------------------------------------------
+
+SORU: Data değeri 5 olan bloktan önce datası -5 olan blok ekleyen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+       for (int i = 0;i<10; i++)
+        {
+            Block bl=new Block();
+            bl.data = i;
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+        }
+
+       Block temp = head;
+        while(temp!=null && temp.next != null)
+        {
+            if (temp.next.data == 5)
+            {
+                Block newBlock = new Block();
+                newBlock.data = -5;
+                newBlock.next = temp.next;
+                temp.next = newBlock;
+                break;
+            }
+            temp = temp.next;
+
+        }
+
+        temp = head;
+        while (temp != null)
+        {
+            Console.Write(temp.data + " -> ");
+            temp = temp.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+-----------------------------------------------------------------------------------
+
+SORU: Tekli linked listteki 7. elemanı ekrana basan kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        for (int i = 0; i < 10; i++)
+        {
+            Block bl = new Block();
+            bl.data = i;
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+            Console.WriteLine(bl.data);
+        }
+
+        Block temp = head;
+        int indis = 0;
+        while (temp != null)
+        {
+            if (indis == 6)
+            {
+                Console.WriteLine($"7. eleman: {temp.data}");
+                break;
+            }
+            temp = temp.next;
+            indis++;
+        }
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+SORU: Listenin 7. elemanından sonra datası 900 olan blogu ekle:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        for (int i = 0; i < 10; i++)
+        {
+            Block bl = new Block();
+            bl.data = i;"
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+        }
+
+        Block temp = head;
+        int indis = 0;
+        while (temp != null)
+        {
+            if (indis == 6)
+            {
+                Block newBL = new Block();
+                newBL.data = 900;
+                newBL.next = temp.next;
+                temp.next = newBL;
+                break;
+            }
+            temp = temp.next;
+            indis++;
+        }
+        temp = head;
+       while(temp!= null)
+        {
+            Console.Write(temp.data + " ->");
+            temp = temp.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+---------------------------------------------------------------------
+
+SORU: İlk bloğu head tekli linked listi ilk bloğu first olan yeni bir listeye kopyalayan kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        Block first = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block bl = new Block();
+            bl.data = i;
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+        }
+
+        Block temp = head;
+        while(temp != null)
+        {
+            Block tmp = new Block();
+            tmp.data = temp.data;
+            tmp.next = null;
+
+            if(first==null) first = tmp;
+            else last.next = tmp;
+            last = tmp;
+            temp = temp.next;
+        }
+        Block yeni = first;
+        while(yeni != null)
+        {
+            Console.WriteLine(yeni.data);
+            yeni = yeni.next;
+        }
+        
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+SORU: Listenin son elemanından önce datası 1876 olan yeni bir eleman ekleyen ve ekrana basan
+kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block bl = new Block();
+            bl.data = i;
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+        }
+
+        Block temp = head;
+        while (temp.next.next != null)
+        {
+            temp=temp.next;
+        }
+        Block yeni=new Block();
+        yeni.data = 1876;
+        yeni.next = temp.next;
+        temp.next = yeni;
+
+        Block current = head;
+        while (current != null)
+        {
+            Console.Write(current.data + " -> ");
+            current = current.next;
+        }
+        Console.WriteLine("null");
+    }
+}
+
+-------------------------------------------------------------------------------------------
+
+SORU: Kullanıcının seçtiği sayı kadar sondaki elemanı silen kod:
+ (Yani kullanıcı 3 girdi ise sondan 3. elemanı sil)
+
+    public class Block
+    {
+        public int data;
+        public Block next;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block bl = new Block();
+            bl.data = i;
+            bl.next = null;
+            if (head == null) head = bl;
+            else last.next = bl;
+            last = bl;
+        }
+
+        int elemansayisi = 0;
+        Block temp = head;
+        while (temp != null)
+        {
+            temp=temp.next;
+            elemansayisi++;
+        }
+
+        Console.WriteLine("sondan kacıncı elemanı silmek istersiniz? : ");
+        int sayi=Convert.ToInt32(Console.ReadLine());
+
+        if(sayi<1 || sayi>elemansayisi) Console.WriteLine("gecersiz sayı");
+        Block bl1 = head;
+        int sayac =1;
+
+        while(sayac<elemansayisi-sayi && bl1.next != null)
+        {
+            bl1 = bl1.next;
+            sayac++;
+        }
+
+        if (sayi == elemansayisi)
+        {
+            Block prev = head;
+            while(prev.next!= bl1)
+            {
+                prev = prev.next;
+            }
+            prev.next = null;
+        }
+        else
+        {
+            bl1.next = bl1.next.next;
+        }
+
+        Block current = head;
+        while(current != null)
+        {
+            Console.WriteLine(current.data + " -> ");
+            current = current.next;
+        }
+        Console.WriteLine("null");
+
+    }
+}
+
+--------------------------------------------------------------------------------------------
+
+

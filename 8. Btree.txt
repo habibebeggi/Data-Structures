@@ -1,0 +1,1641 @@
+En küçük tree yapısı olan binary tree veya ikili ağaç en az bir bloktan oluşup iki adet pointera sahiptir. 
+Sıkıştırma, sıralama, arama algoritmalarında, veritabanı vb. sistemlerde kullanılır.  
+tree' yi oluşturan bloklar: node/düğüm
+en tepedeki node: root/kök
+en alt kısımdaki nodelar: leaf/yaprak
+treede bulunan ve işaret eden nodelar: parent işaret edilen nodelar child
+rootun bulundugu level: root/0. level
+root --> leafe doğru 1-> 2-> 2-> ... son level: elaf level
+
+btree dizi ve linked lsitle kodlanabilir.
+
+-----------------------------------------------------------------------------------------------
+SORU: Dizileri kullanarak btree oluşturup elemanlarını ekrana yazdırma:
+
+class Program
+{
+    static int[] binarytree = new int[100];
+    static void yaz(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return;
+        if (bt[indis]!=0) Console.WriteLine(bt[indis]);
+        yaz(bt, indis * 2 + 1);
+        yaz(bt, indis * 2 + 2);
+    }
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        yaz(binarytree, 0);
+    }
+}
+
+---------------------------------------------------------------------------
+
+SORU:Yukarıdaki kodda önce sol nodelar sonra sağ nodeları yazdıracak şekilde kodu güncelleme:
+
+   static void yaz(int[] bt, int indis)
+   {
+       if (indis >= bt.Length) return;
+       if (bt[indis]!=0)
+       yaz(bt, indis * 2 + 1);
+       Console.WriteLine(bt[indis]);
+       yaz(bt, indis * 2 + 2);
+   }
+
+---------------------------------------------------------------------------
+SORU: Yukarıdaki kodda sag nodelar-kok-sol nodelar olacak sekilde tersten yazdıran kodu yaz:
+
+    static void TerstenYaz(Btree bt)
+    {
+        if(bt == null) return;
+        TerstenYaz(bt.right);
+        if(bt.data!=0) Console.WriteLine(bt.data);
+        TerstenYaz(bt.left);
+    }
+---------------------------------------------------------------------------
+
+Önce child sonra parent nodeları yazdıracak sekilde güncelleme:
+
+    static void yaz(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return;
+        if (bt[indis]!=0)
+        yaz(bt, indis * 2 + 1);
+        yaz(bt, indis * 2 + 2);
+        Console.WriteLine(bt[indis]);
+    }
+
+----------------------------------------------------------------------------------------
+
+SORU: Recursive btree işlemlerinde 100.000 levelden sonra  StackOverflow hatası verebilir. Btree' yi bastırma kısmında 
+bir metodun alt alta iki kez recursive çağrılmasının hesaplama karmaşıklığı 2^n dir. Yani üstel bir büyüme gösteren bu 
+algoritma uzun vadede tehlike arz etmektedir. Recursive çözüme altrenatif olan çözüm:
+
+
+*** Stack kullanma nedeni: Yığın, derinlik öncelikli arama (DFS) için kullanılan bir veri yapısıdır. 
+Ağacın düğümlerine derinlik öncelikli (pre-order) sırasıyla erişebilmek için kullanılır.
+if (indis < 15) { st.Push(indis); } iki kez yazılması: 
+Bir düğümün sol çocuğuna ve sağ çocuğuna gidilmesi gerektiği için, 
+her iki çocuk (sol ve sağ) için de geçerli indeksler kontrol edilip stack'e eklenir.***
+
+class Program
+{
+    class Block
+    {
+        public Block next;
+        public Block prev;
+        public int data;
+    }
+
+    static int[] binarytree = new int[100];
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        Stack<int> st = new Stack<int>();
+        st.Push(0);
+        while (st.Count > 0)
+        {
+            int indis = st.Pop();
+            Console.WriteLine(binarytree[indis]);
+            indis = indis * 2 + 1;
+            if (indis < 15) { st.Push(indis); }
+            indis++;
+            if (indis < 15) { st.Push(indis); }
+        }
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+SORU: dizi kullanarak level order btree olusturup ınorder ekrana yazan kod
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+
+    static Btree Olustur(int[] bt, int indis)
+    {
+        if (indis >= bt.Length || bt[indis] == 0) return null;
+
+        Btree b = new Btree();
+        b.data = bt[indis];
+
+        b.left = Olustur(bt, indis * 2 + 1);
+        b.right = Olustur(bt, indis * 2 + 2);
+
+        return b;
+    }
+
+    static void Inorder(Btree bt)
+    {
+        if (bt == null) return;
+        Inorder(bt.left);
+        Console.Write(bt.data + " ");
+        Inorder(bt.right);
+    }
+
+    static void Main()
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 6, 7 };
+        Btree root = Olustur(bt, 0);
+        Console.WriteLine("Inorder Traversal:");
+        Inorder(root);
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+
+SORU: Linked listle btree oluşturma: 
+
+class Program
+{
+    class Block
+    {
+        public Block left;
+        public Block right;
+        public int data;
+    }
+
+    static Block Olustur(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return null;
+        if (bt[indis] != 0) Console.WriteLine(bt[indis]);
+        Block bl = new Block();
+        bl.data = bt[indis];
+        indis = indis * 2 + 1;
+        bl.left = Olustur(bt, indis);
+        bl.right = Olustur(bt, indis++);
+        return bl;
+    }
+
+    static Block head = null;
+    static int[] binarytree = new int[100];
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        head = Olustur(binarytree, 0);
+    }
+}
+
+-----------------------------------------------------------------------------------------------
+SORU: yukarıdaki kodda tüm elemanları yazdırmak için:
+
+class Program
+{
+    class Block
+    {
+        public Block left;
+        public Block right;
+        public int data;
+    }
+
+    static Block Olustur(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return null;
+        if (bt[indis] != 0) Console.WriteLine(bt[indis]);
+        Block bl = new Block();
+        bl.data = bt[indis];
+        indis = indis * 2 + 1;
+        bl.left = Olustur(bt, indis);
+        bl.right = Olustur(bt, indis++);
+        return bl;
+    }
+
+    static Block head = null;
+    static int[] binarytree = new int[100];
+
+    static void Write(Block b)
+    {
+        if(b== null) return;
+        Console.WriteLine(b.data);
+        Write(b.left);
+        Write(b.right);
+    }
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        head = Olustur(binarytree, 0);
+        Write(head);
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Btree' de bir elemanın olup olmadığını bulan kodu yazınız. (Hem normal hemd e recursive çözüm)
+
+****************Normal Çözüm ****************
+class Program
+{
+    static int[] binarytree = new int[100];
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        int aranan = 14; 
+        int ind = 0; 
+        bool bulundu = false;
+
+        while (ind < binarytree.Length)
+        {
+            if (binarytree[ind] == aranan)  
+            {
+                bulundu = true;
+                break; 
+            }
+
+            if (binarytree[ind] < aranan) ind = ind * 2 + 2; 
+            else  ind = ind * 2 + 1; 
+        }
+
+        if (bulundu) Console.WriteLine("Bulundu");
+        else Console.WriteLine("Bulunamadı");
+    }
+}
+
+*******************Recursive Çözüm*********************
+class Program
+{
+    static int[] binarytree = new int[100];
+    static int Ara(int[] btree, int ind, int aranan)
+    {
+        if (ind >= btree.Length) return 0;
+        if (btree[ind] == aranan) return 1;
+        int a= Ara(btree, ind*2+1, aranan);
+        a += Ara(btree, ind * 2 + 2, aranan);
+        return a;
+    }
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+        int aranan = Ara(binarytree, 0, 14);
+        if (aranan == 1) Console.WriteLine("Bulundu");
+        else Console.WriteLine("Bulunamadı");
+    }
+}
+
+----------------------------diğer recursive çözüm:---------------------------------
+
+    static int[] binarytree = new int[100];
+    static int Ara(int[] btree, int indis, int aranan)
+    {
+        if (indis >= btree.Length) return 0;
+        if (btree[indis] < aranan) return Ara(btree, indis * 2 + 2, aranan);
+        else if (btree[indis] == aranan) return 1;
+        else return Ara(btree, indis * 2 + 1, aranan);
+    }
+
+---------------------------------------------------------------------------------------------------------------
+
+SORU: Btree' de bir elemanın kaç kez tekrar ettiğini bulunuz. (Hem recursive hem de normal çözüm)
+
+**************************** Normal Çözüm *************************
+
+class Program
+{
+    static int[] binarytree = new int[100];
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 14;
+        binarytree[8] = 9;
+        binarytree[9] = 14;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        int aranan = 14;
+        int adet = 0;
+        int ind = 0; 
+
+        var stack = new System.Collections.Generic.Stack<int>();
+        stack.Push(ind);
+
+        while (stack.Count > 0)
+        {
+            ind = stack.Pop(); 
+
+            if (ind < binarytree.Length)
+            {
+                if (binarytree[ind] == aranan)
+                {
+                    adet++; 
+                }
+
+                int leftChildIndex = ind * 2 + 1;
+                int rightChildIndex = ind * 2 + 2;
+
+                if (leftChildIndex < binarytree.Length)
+                {
+                    stack.Push(leftChildIndex);
+                }
+
+                if (rightChildIndex < binarytree.Length)
+                {
+                    stack.Push(rightChildIndex);
+                }
+            }
+        }
+
+        Console.WriteLine("Aranan eleman " + adet + " kez var");
+    }
+}
+
+************************* Recursive Çözüm **********************************
+
+class Program
+{
+    static int[] binarytree = new int[100];
+    static int adet = 0;
+    static int Ara(int[] btree, int indis, int aranan)
+    {
+        if (indis >= btree.Length) return 0;
+        if (btree[indis] == aranan) adet++;
+        return Ara(btree, indis * 2 + 1, aranan) + Ara(btree, indis * 2 + 2, aranan);
+    }
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 14;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        int aranan = Ara(binarytree, 0, 14);
+        Console.WriteLine("Aranan eleman " +adet+ " kez var");
+    }
+}
+
+----------------------------------------------------------------------------------------------------------
+
+SORU: Linked listle oluşturulmuş btree' de search yapma:
+
+class Program
+{
+    class Block
+    {
+        public Block left;
+        public Block right;
+        public int data;
+    }
+
+    static int[] binarytree = new int[100];
+    static int Bul(Block bt, int aranan)
+    {
+        if(bt == null) return 0;
+        if (bt.data == aranan) return 1;
+        return Bul(bt.left,aranan) + Bul(bt.right,aranan);
+    }
+
+    static Block Olustur(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return null;
+        Block b = new Block();
+        b.data = bt[indis];
+        b.left = Olustur(bt, indis * 2 + 1);
+        b.right = Olustur(bt, indis * 2 + 2);
+        return b;
+
+    }
+    static void Main(string[] args)
+    {
+        binarytree[0] = 15;
+        binarytree[1] = 11;
+        binarytree[2] = 26;
+        binarytree[3] = 8;
+        binarytree[4] = 12;
+        binarytree[5] = 20;
+        binarytree[6] = 30;
+        binarytree[7] = 6;
+        binarytree[8] = 9;
+        binarytree[9] = 0;
+        binarytree[10] = 14;
+        binarytree[11] = 0;
+        binarytree[12] = 0;
+        binarytree[13] = 0;
+        binarytree[14] = 35;
+
+        Block a = new Block();
+        a = Olustur(binarytree, 0);
+        int aranan = Bul(a, 612);
+        if (aranan == 1) Console.WriteLine("bulundu");
+        else Console.WriteLine("bulunamadı");
+    }
+}
+
+-----------------------------------------------------------------------------
+SORU: Dizilerle oluşturulan iki btree' deki farklı eleman sayısını donduren kodu yazınız:
+**Her bir rekürsif çağrı için fark değişkeni başlangıçta sıfırlanır ve sadece ilgili ağacın (düğümün) 
+farklarını toplar. Bu sayede her bir çağrı birbirinden bağımsız olur ve önceki çağrılar birbirini etkilemez.
+
+class Program
+{
+    static int[] binarytree = new int[100];
+ 
+    static int FarkBul(int[] bt1, int[] bt2, int indis)
+    {
+        if(indis>=bt1.Length || indis>=bt2.Length) return 0;
+        int fark = 0; 
+        if (bt1[indis] != bt2[indis]) fark =1;
+        return fark + FarkBul(bt1, bt2, indis * 2 + 1) + FarkBul(bt1, bt2, indis * 2 + 2);
+    }
+
+    static void Main(string[] args)
+    {
+        int [] bt1 = new int[100];
+        int [] bt2 = new int[100];
+
+        bt1[0] = 1;
+        bt1[1] = 2;
+        bt1[2] = 3;
+        bt1[3] = 4;
+        bt1[4] = 5;
+        bt1[5] = 6;
+        bt1[6] = 7;
+
+        bt2[0] = 1;
+        bt2[1] = 2;
+        bt2[2] = 8; 
+        bt2[3] = 4;
+        bt2[4] = 9;
+        bt2[5] = 26;
+        bt2[6] = 7;
+
+        int farkSayisi = FarkBul(bt1, bt2, 0);
+        Console.WriteLine("Dizilerdeki fark sayısı: " + farkSayisi);
+    }
+}
+
+-------------------------------------------------------------------------------------------------
+SORU: Diziyle oluşturulan bir btree' de arama işlemi: ** Burada btree' de 0 değeri düğüm yok olarak düşünülmüştür.
+
+class Program
+{
+    static int[] btree = new int[100];
+    static int SearchDizi(int data, int indis)
+    {
+        if (indis >= btree.Length || btree[indis]==0 ) return 0;
+        if (data == btree[indis]) return 1;
+        return SearchDizi(data, indis*2+1) + SearchDizi(data, indis*2+2);
+    }
+
+    static void Main(string[] args)
+    {
+        btree[0] = 1;
+        btree[1] = 2;
+        btree[2] = 0;
+        btree[3] = 4;
+        btree[4] = 5;
+        btree[5] = 6;
+
+        Console.WriteLine(SearchDizi(0, 6));
+    }
+}
+------------------------------------------------------------------------------------------------------
+SORU: Bir bağlantılı listenin düğümlerini ileri yönde ve geri yönde gezerek ekrana yazdıran kod:
+
+    static void GeriYaz(Block bt)
+    {
+        while(bt != null)
+        {
+            Console.WriteLine(bt.data);
+            bt = bt.prev;
+        }
+    }
+
+    static void IleriYaz(Block bt)
+    {
+        Console.WriteLine(bt.data);
+        bt = bt.next;
+    }
+
+------------------------------------------------------------------------------------------------------
+SORU: Diziyle oluşturulan btree' yi pre-order gezme:
+
+
+class Program
+{
+    static int[] btree = new int[100];
+    static void PreOrder(int[] bt)
+    {
+        Stack<int> st = new Stack<int>();
+        st.Push(0);
+        while (st.Count > 0)
+        {
+            int indis = st.Pop();
+            Console.WriteLine(bt[indis]);
+            if ((indis * 2 + 1) < bt.Length) st.Push(indis * 2 + 1);
+            if ((indis * 2 + 2) < bt.Length) st.Push(indis * 2 + 2);
+        }
+    }
+    static void Main()
+    {
+        btree[0] = 1;
+        btree[1] = 278;
+        btree[2] = 75;
+        btree[3] = 42;
+        btree[4] = 16;
+        btree[5] = 58;
+        PreOrder(btree);
+    }
+}
+
+------------------------------------------------------------------------------------------------------
+SORU: Btree' yi pre-order traversal yöntemiyle gezip, her düğümün verisini ekrana yazdıran kod:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+        public Btree(int data)
+        {
+            this.data = data;
+        }
+    }
+    static void PreOrder(Btree bt)
+    {
+        Stack<Btree> st = new Stack<Btree>();
+        st.Push(bt);
+
+        while (st.Count > 0)
+        {
+            Btree indis = st.Pop();
+            Console.WriteLine(indis.data);
+            if (indis.left != null) st.Push(indis.left);
+            if (indis.right != null) st.Push(indis.right);
+        }
+    }
+    static void Main()
+    {
+        Btree bt = new Btree(10);
+        bt.left = new Btree(8);
+        bt.right = new Btree(14);
+        bt.left.left = new Btree(6);
+        bt.right.left = new Btree(10);
+        
+        PreOrder(bt);
+    }
+}
+------------------------------------------------------------------------------------------------------
+SORU: Linked listle oluşturulan btree' de belirtilen data değerini arama:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+        public Btree(int data)
+        {
+            this.data = data;
+        }
+    }
+
+    static int SearchLinked(int data, Btree bt)
+    {
+        if(bt== null) return 0;
+        if (data == bt.data) return 1;
+        return SearchLinked(data, bt.left) + SearchLinked(data,bt.right);
+    }
+    static void Main(string[] args)
+    {
+        Btree bt= new Btree(1);
+        bt.left = new Btree(3);
+        bt.right = new Btree(4);
+        bt.left.left = new Btree(5);
+
+        int sonuc = SearchLinked(5, bt);
+        if (sonuc == 1) Console.WriteLine("BULUNDU");
+        else Console.WriteLine("YOK");
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Linked listle oluşturulan btree' de belirtilen data değerini while ile arama:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+        public Btree(int data)
+        {
+            this.data = data;
+        }
+    }
+
+    static int SearchLinkedWhile(int data, Btree root)
+    {
+        if (root == null) return 0;
+        if (root.data == data) return 1;
+        Stack<Btree> st = new Stack<Btree>();
+        if (root.left != null) st.Push(root.left);
+        if (root.right != null) st.Push(root.right);
+        while (st.Count > 0)
+        {
+            Btree temp = st.Pop();
+            if (temp.data == data) return 1;
+            if (temp.left != null) st.Push(temp.left);
+            if (temp.right != null) st.Push(temp.right);
+        }
+        return 0;
+    }
+
+    static void Main(string[] args)
+    {
+        Btree bt = new Btree(1);
+        bt.left = new Btree(3);
+        bt.right = new Btree(4);
+        bt.left.left = new Btree(5);
+       
+        int sonuc = SearchLinkedWhile(3, bt);
+       if(sonuc == 1) Console.WriteLine("Bulundu");
+       else Console.WriteLine("Bulunamadı");
+
+    }
+}
+
+--------------------------------------------------------------------------
+SORU: Diziyle oluşturulan sıralı bir btree' de belirtilen data değerini arama:
+class Program
+{
+    static int[] btree = new int[100];
+    static int SearchSortedDizi(int data, int indis)
+    {
+        if (indis >= btree.Length || btree[indis]==0) return 0;
+        if (btree[indis] == data) return 1;
+        if (data < btree[indis]) return SearchSortedDizi(data, indis * 2 + 1);
+        else return SearchSortedDizi(data, indis * 2 + 2);
+    }
+
+    static void Main(string[] args)
+    {
+        btree[0] = 1;
+        btree[1] = 278;
+        btree[2] = 75;
+        btree[3] = 42;
+        btree[4] = 16;
+        btree[5] = 58;
+
+        int sonuc = SearchSortedDizi(75, 0);
+        if (sonuc == 1) Console.WriteLine("bulundu");
+        else Console.WriteLine("bulunamadı");
+    }
+}
+---------------------------------------------------------------------------
+SORU: Linked listle oluşturulan sıralı btree' de verilen datayı arama:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+        public Btree(int data)
+        {
+            this.data = data;
+        }
+    }
+
+    static int SearchSortedLinked(int data, Btree root)
+    {
+        if (root == null) return 0;
+        if(root.data == data) return 1;
+        if (data < root.data) return SearchSortedLinked(data, root.left);
+        else return SearchSortedLinked(data, root.right);
+    }
+    static void Main(string[] args)
+    {
+        Btree bt = new Btree(10);
+        bt.left = new Btree(3);
+        bt.right = new Btree(14);
+        bt.left.left = new Btree(2);
+        bt.right.left= new Btree(6);
+
+        int sonuc = SearchSortedLinked(14, bt);
+        if (sonuc == 1) Console.WriteLine("bulundu");
+        else Console.WriteLine("bulunamadı");
+    }
+}
+--------------------------------------------------------------------------------
+SORU: Yukarıdaki soruyu while ile çözen kod:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+        public Btree(int data)
+        {
+            this.data = data;
+        }
+    }
+
+    static int SearchSortedLinkedWhile(int data, Btree root)
+    {
+        if (root == null) return 0;
+        while (root != null)
+        {
+            if(root.data == data) return 1;
+            if(data<root.data) root  =root.left;
+            else root=root.right;
+        }
+        return 0;
+    }
+    static void Main(string[] args)
+    {
+        Btree bt = new Btree(10);
+        bt.left = new Btree(3);
+        bt.right = new Btree(14);
+        bt.left.left = new Btree(2);
+        bt.right.left= new Btree(6);
+
+        int sonuc = SearchSortedLinkedWhile(14, bt);
+        if (sonuc == 1) Console.WriteLine("bulundu");
+        else Console.WriteLine("bulunamadı");
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Linked listle oluşturulan btree' yi diziyle oluşturacak şekilde kopyalama:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+
+        public Btree()
+        {
+            data = 0; 
+            left = null;
+            right = null;
+        }
+    }
+
+    static int[] btree = new int[100];
+    static void BtreeCopy(int ind, Btree root)
+    {
+        if (ind >= 100) return; 
+        if (root == null) return; 
+
+        btree[ind] = root.data;  
+        BtreeCopy(ind * 2 + 1, root.left);  
+        BtreeCopy(ind * 2 + 2, root.right);
+    }
+
+    static void Main(string[] args)
+    {
+        Btree bt = new Btree();
+        bt.data = 4;                
+        bt.left = new Btree();      
+        bt.right = new Btree();     
+        bt.left.data = 5;           
+        bt.right.data = 6;    
+        BtreeCopy(0, bt);
+        for (int i = 0; i < btree.Length; i++)
+        {
+            if (btree[i] != 0) 
+            {
+                Console.WriteLine(btree[i]);
+            }
+        }
+    }
+}
+
+------------------------------------------------------------------------------------
+SORU: Parametre olarak verilen düğümün altındaki düğüm sayısını bulan kod:
+class Program
+{
+    static int Hesapla(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return 0;
+        int left = indis * 2 + 1;  
+        int right = indis * 2 + 2; 
+        int leftCount=0, rightCount=0;
+        if (left < bt.Length)
+        {
+            leftCount = 1 + Hesapla(bt, left);
+        }
+        if (right < bt.Length)
+        {
+            rightCount=1+Hesapla(bt, right);
+        }
+        return  leftCount + rightCount; 
+    }
+
+    static void Main(string[] args)
+    {
+        int[] bt = { 3, 5, 6, 8, 9, 10 };
+        Console.WriteLine(Hesapla(bt, 0)); 
+    }
+}
+------------------------------------------------------------------------------
+SORU: Btree' ye sıralı şekilde veri ekleyen kod:
+class Program
+{
+    static int[] btree = new int[100];
+    static void DiziSortedEkle(int data, int ind)
+    {
+        if (ind > btree.Length) return;
+        if (btree[ind] == -1) { btree[ind] = data; return; }
+        if (data < btree[ind]) DiziSortedEkle(data, ind * 2 + 1);
+        else DiziSortedEkle(data, ind * 2 + 2);
+    }
+    static void Main(string[] args)
+    {
+        for (int i = 0; i < btree.Length; i++)
+        {
+            btree[i] = -1;
+        }
+
+        DiziSortedEkle(50, 0);  // Kök
+        DiziSortedEkle(30, 0);  // Sol alt düğüm
+        DiziSortedEkle(70, 0);  // Sağ alt düğüm
+        DiziSortedEkle(20, 0);  // 30'un sol alt düğümü
+        DiziSortedEkle(40, 0);  // 30'un sağ alt düğümü
+        DiziSortedEkle(60, 0);  // 70'in sol alt düğümü
+        DiziSortedEkle(80, 0);  // 70'in sağ alt düğümü
+
+        for (int i = 0; i < btree.Length; i++)
+        {
+            if (btree[i] != -1)
+            {
+                Console.WriteLine($"Index {i}: {btree[i]}");
+            }
+        }
+    }
+}
+-----------------------------------------------------------------------
+SORU: Btree' ye sıralı şekilde veri ekleme linked listle:
+
+class Program
+{
+    class Btree{
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+    static Btree bt = null;
+    static void LinkedSortedEkle(int data, Btree root)
+    {
+        if (root == null)
+        {
+            root = new Btree();
+            root.data = data;
+            bt = root;
+            return;
+        }
+        if (root.data < data)
+        {
+            if (root.right != null) { LinkedSortedEkle(data, root.right); }
+            else
+            {
+                root.right = new Btree();
+                root.right.data = data;
+            }
+        }
+        else
+        {
+            if (root.left != null) { LinkedSortedEkle(data, root.left); }
+            else
+            {
+                root.left = new Btree();
+                root.left.data = data;
+            }
+        }
+    }
+    // In-order traversal (sol, kök, sağ) - ağacı sıralı olarak yazdırma
+    static void InOrderTraversal(Btree root)
+    {
+        if (root == null) return;
+        InOrderTraversal(root.left); 
+        Console.WriteLine(root.data);  
+        InOrderTraversal(root.right); 
+    }
+
+    static void Main(string[] args)
+    {
+        LinkedSortedEkle(50, bt);  
+        LinkedSortedEkle(30, bt); 
+        LinkedSortedEkle(70, bt);  
+        LinkedSortedEkle(20, bt);  
+        LinkedSortedEkle(40, bt);  
+        LinkedSortedEkle(60, bt); 
+        LinkedSortedEkle(80, bt); 
+        Console.WriteLine("Ağaç sıralı şekilde:");
+        InOrderTraversal(bt);
+    }
+}
+-------------------------------------------------------------------------------
+SORU: Diziyle oluşturulan btree' de bir datanın kaç kez tekrar ettiğini bulan kod:
+using System;
+
+class Program
+{
+    static int[] btree = new int[100];
+    static int Find(int[] bt, int data, int i)
+    {
+        if (i >= bt.Length || bt[i] == 0) return 0;
+        if (bt[i] == data) return 1 + Find(bt, data, i * 2 + 1) + Find(bt, data, i * 2 + 2);
+        else return 0 + Find(bt, data, i * 2 + 1) + Find(bt, data, i * 2 + 2);
+    }
+    static void Main(string[] args)
+    {
+        int[] a = { 2, 4, 3, 5, 7, 8, 9,10, 5, 7 };
+        int b= Find(a, 7, 0);
+        Console.WriteLine(b);
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Aranan bir datanın btree' de hangi indislerde olduğunu dönen kod:
+class Program
+{
+    static void FindIndex(int[] bt, int data)
+    {
+       Stack<int> stack = new Stack<int>();
+        stack.Push(0);
+
+        while (stack.Count > 0)
+        {
+            int i = stack.Pop();
+            if (i < bt.Length && bt[i] == data) Console.WriteLine(i);
+            int solIndex = i * 2 + 1;
+            int sagIndex = i * 2 + 2;
+            if (solIndex< bt.Length) stack.Push(solIndex);
+            if (sagIndex < bt.Length) stack.Push(sagIndex);
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        int[] a = { 2, 4, 3, 5, 7, 8, 9, 10, 5, 7 };
+        Console.WriteLine("Aranan değer 7, aşağıdaki indekslerde bulundu:");
+        FindIndex(a, 7);
+    }
+}
+--------------------------------------------------------------
+
+SORU: Btree' de en büyük elemanı bulma:
+class Program
+{
+    static int EBEBul(int[] bt, int indis)
+    {
+        if (indis >= bt.Length || bt[indis] == 0) return 0;
+        int a = EBEBul(bt, indis * 2 + 1);
+        int b = EBEBul(bt, indis * 2 + 2);
+        int eb = 0;
+        if (a > b) eb = a; else eb = b;
+        if (bt[indis] > eb) eb = bt[indis];
+        return eb;
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 10, 5, 12, 3, 7, 11, 1547 };
+        int maxValue = EBEBul(bt, 0);
+        Console.WriteLine("Ağacın en büyük değeri: " + maxValue);
+    }
+}
+
+-----------------------------------------------------------------------
+SORU: btree' de her düğüm altında kac dugum oldugunu donen kod:
+
+class Program
+{
+    static void SeviyeEleman(int[] bt, int indis, int[] svy, int seviye)
+    {
+        if (indis >= bt.Length || bt[indis]==0) return;
+        svy[seviye]++;
+        SeviyeEleman(bt, indis * 2 + 1, svy, seviye + 1);
+        SeviyeEleman(bt,indis*2+2, svy,seviye + 1);
+    }
+
+    static void Main(string[] args)
+    {
+        int[] bt = { 10, 5, 20, 1, 6, 15, 25 };
+        int[] svy = new int[10];
+        SeviyeEleman(bt, 0, svy, 0);
+        for (int i = 0;i<svy.Length;i++)
+        {
+           if(svy[i] > 0) Console.WriteLine($"seviye {i}: {svy[i]} düğüm");
+        }
+    }
+}
+
+----------------------------------------------------------------------------
+SORU:  Btree olluşturma ve veri ekleme:
+
+class Program
+{
+   static void Ekle(int[] bt, int indis, int data)
+    {
+        if (indis >= bt.Length) return;
+        int sol = indis * 2 + 1;
+        int sag = indis * 2 + 2;
+        if (bt[indis] == 0) { bt[indis] = data; return; }
+        if (bt[indis] > data)
+        {
+            if (sol >= bt.Length || bt[sol] == 0) { bt[sol] = data; return; }
+            else Ekle(bt,sol,data); 
+        }
+        else
+        {
+            if (sag >= bt.Length || bt[sag] == 0) { bt[sag] = data; return; }
+            else Ekle(bt,sag,data);
+        }
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = new int[15]; 
+        bt[0] = 10;
+
+        Ekle(bt, 0, 5);  
+        Ekle(bt, 0, 20);  
+        Ekle(bt, 0, 1);   
+        Ekle(bt, 0, 6);   
+        Ekle(bt, 0, 15);  
+        Ekle(bt, 0, 25);  
+
+        Console.WriteLine("Ağacın dizisi:");
+        foreach (var item in bt)
+        {
+            Console.Write(item + " ");
+        }
+        Console.WriteLine();
+    }
+}
+---------------------------------------------------------------------------
+SORU: Sag ev soldaki eleman syaılarını ve yine sag ve soldaki en buyuk elemanları veren kodu yaz:
+
+class Program
+{
+    static void SagSolSay(int[] bt, int indis, int[] sonuc)
+    {
+        if (indis >= bt.Length) return;
+        if (indis * 2 + 1 < bt.Length && bt[indis * 2 + 1] != 0)
+            sonuc[0]++;
+        if (indis * 2 + 2 < bt.Length && bt[indis * 2 + 2] != 0)
+            sonuc[1]++;
+
+        SagSolSay(bt, indis * 2 + 1, sonuc);
+        SagSolSay(bt, indis * 2 + 2, sonuc);
+    }
+
+    static void EBSS(int[] bt, int indis, int[] sonuc)
+    {
+        if (indis >= bt.Length) return;
+
+        if (indis * 2 + 1 < bt.Length && bt[indis * 2 + 1] != 0)
+            if (bt[indis * 2 + 1] > sonuc[0])
+                sonuc[0] = bt[indis * 2 + 1];
+
+        if (indis * 2 + 2 < bt.Length && bt[indis * 2 + 2] != 0)
+            if (bt[indis * 2 + 2] > sonuc[1])
+                sonuc[1] = bt[indis * 2 + 2];
+
+        EBSS(bt, indis * 2 + 1, sonuc);
+        EBSS(bt, indis * 2 + 2, sonuc);
+    }
+
+    static void Main(string[] args)
+    {
+        int[] bt = new int[15] { 10, 5, 20, 3, 7, 15, 25, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        int[] sonuc1 = new int[2] { 0, 0 };
+        SagSolSay(bt, 0, sonuc1);
+
+        Console.WriteLine($"Sol eleman sayısı: {sonuc1[0]}");
+        Console.WriteLine($"Sağ eleman sayısı: {sonuc1[1]}");
+
+        int[] sonuc2 = new int[2] { 0,0 };
+        EBSS(bt, 0, sonuc2);
+
+        Console.WriteLine($"Soldaki en büyük eleman: {sonuc2[0]}");
+        Console.WriteLine($"Sağdaki en büyük eleman: {sonuc2[1]}");
+    }
+}
+---------------------------------------------------------------------------
+
+SORU:  Btree'de her seviyenin en buyuk degerini donen kod:
+
+class Program
+{
+    static int SeviyeEB(int[] bt, int ind, int seviye)
+    {
+        if (ind > bt.Length || bt[ind] == 0) return -1;
+        if(seviye==0) return bt[ind];
+        int solMax = SeviyeEB(bt, ind * 2 + 1, seviye - 1);
+        int sagMax= SeviyeEB(bt, ind *2+2,seviye - 1);
+        if (solMax > sagMax) return solMax;
+        else return sagMax;
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 10, 5, 20, 1, 6, 15, 25, 0, 0, 12, 0 };
+        int seviye = 2;
+        Console.WriteLine($"seviye {seviye} için eb eleman: {SeviyeEB(bt, 0, seviye)}");
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Girilen seviyedeki en buyuk dugumu donen kod:
+
+class Program
+{
+    static void SeviyeEleman(int[] bt, int indis, int[] svy, int seviye)
+    {
+        if (indis >= bt.Length || bt[indis]==0) return;
+        if (svy[seviye] < bt[indis]) svy[seviye] = bt[indis];
+        SeviyeEleman(bt, indis * 2 + 1, svy, seviye + 1);
+        SeviyeEleman(bt,indis*2+2, svy,seviye + 1);
+    }
+
+    static void Main(string[] args)
+    {
+        int[] bt = { 10, 5, 20, 1, 6, 15, 25, 0, 0, 12, 0 };
+        int[] svy = new int[10]; 
+        
+        SeviyeEleman(bt, 0, svy, 0);
+        for (int i = 0; i < svy.Length; i++)
+        {
+            if (svy[i] > 0) Console.WriteLine($"Seviye {i}: {svy[i]}");
+        }
+    }
+}
+-------------------------------------------------------------------------------------
+SORU: Diziyle oluşturulan btree' de gecerli düğüm sayısını dönen kod:
+class Program
+{
+    static int[] btree = new int[100];
+    static int DugumSay(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return 0;
+        if (bt[indis] == 0) return 0 + DugumSay(bt, indis * 2 + 1) + DugumSay(bt, indis * 2 + 2);
+        else return 1 + DugumSay(bt, indis * 2 + 1) + DugumSay(bt, indis * 2 + 2);
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 0, 0, 7 };
+        Console.WriteLine($"gecerli dugumsayısı: {DugumSay(bt,0)}");
+    }
+}
+--------------------------------------------------------------------------
+SORU: Diziyle oluşturulan btree' nin derinliğini bulan kod:
+class Program
+{
+    static int DerinlikBul(int[] bt, int indis)
+    {
+        if(indis>=bt.Length || bt[indis]== 0) return 0;
+
+        int solDerinlik = DerinlikBul(bt, indis*2+1);
+        int sagDerinlik = DerinlikBul(bt, indis * 2 + 2);
+        if (solDerinlik > sagDerinlik) return solDerinlik + 1;
+       else return sagDerinlik + 1;
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 4, 3 };
+        Console.WriteLine($"Ağaç derinliği: {DerinlikBul(bt,0)}");
+    }
+}
+
+**************** diğer çözüm********************
+class Program
+{
+    static int DerinlikBul(int[] bt, int indis, int derinlik)
+    {
+        if (indis >= bt.Length || bt[indis] == 0) return derinlik;
+
+        int solDerinlik = DerinlikBul(bt, indis * 2 + 1, derinlik+1);
+        int sagDerinlik = DerinlikBul(bt, indis * 2 + 2, derinlik+1);
+        if (solDerinlik > sagDerinlik) return solDerinlik ;
+        else return sagDerinlik ;
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 4, 3 };
+        Console.WriteLine($"Ağaç derinliği: {DerinlikBul(bt, 0,0)}");
+    }
+}
+--------------------------------------------------------------------------
+SORU: Linked listle oluşturulan bir btree' nin derinliğini bulan kod:
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block left;
+        public Block right;
+    }
+    static int count = 0;
+    static void DerinlikBul(Block bt, int localCount = 0)
+    {
+        if (bt == null) return;
+        localCount++;
+        if (localCount > count) count = localCount;
+        DerinlikBul(bt.right, localCount);
+        DerinlikBul(bt.left, localCount);
+    }
+    static void Main(string[] args)
+    {
+        Block bt = new Block();
+        bt.data = 4;
+        bt.left = new Block();
+        bt.right = new Block();
+        bt.left.data = 5;
+        bt.right.data = 6;
+        bt.left.left = new Block();
+        bt.left.left.data = 7;
+        DerinlikBul(bt, 0);
+        Console.WriteLine("Ağacın derinliği: " + count);
+    }
+}
+--------------------------------------------------------------------
+SORU: Linked listle oluşturulan btree' nin sağ ve sol derinliklerini bulan ve toplayıp ekrana donen kod:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+    static int Derinlik(Btree bt)
+    {
+        int sag = 0;
+        int sol = 0;
+        if(bt.left!=null) sol=1+Derinlik(bt.left);
+        if(bt.right!=null) sag=1+Derinlik(bt.right);
+        Console.WriteLine($"sol: {sol}, sag: {sag}");
+        return sol + sag;
+    }
+
+    static void Main(string[] args)
+    {
+        Btree bt = new Btree();
+        bt.data = 4;
+        bt.left = new Btree();
+        bt.right = new Btree();
+        bt.left.data = 5;
+        bt.right.data = 6;
+        bt.left.left = new Btree();
+        bt.left.left.data = 7;
+        Console.WriteLine(Derinlik(bt));
+    }
+}
+
+----------------------------------------------------------------------
+SORU: Dizi elemanalrını kullanarak preorder sıralı btree oluşturma:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+
+    static Btree Olustur(int[] bt, int indis)
+    {
+        if (indis >= bt.Length) return null;
+        Btree btree = new Btree();
+        btree.data = bt[indis];
+        btree.left = Olustur(bt, indis * 2 + 1);
+        btree.right = Olustur(bt, indis * 2 + 2);
+        return btree;
+    }
+
+    static void PreOrder(Btree root)
+    {
+        if (root == null) return;
+
+        Console.Write(root.data + " ");
+
+        PreOrder(root.left);
+        PreOrder(root.right);
+    }
+
+    static void Main(string[] args)
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 6, 7 };
+        Btree root = Olustur(bt, 0);
+        Console.WriteLine("PreOrder gezintisi:");
+        PreOrder(root);
+    }
+}
+----------------------------------------------------------------------
+SORU: Yukarıdaki sorunun ref ile çözümü:
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+
+    static Btree Olustur(int[] bt, int indis, ref Btree btt)
+    {
+        if (indis >= bt.Length) return null;
+        Btree btree = new Btree();
+        btree.data = bt[indis];
+       if(btt==null) btt = btree;
+        btree.left = Olustur(bt, indis * 2 + 1, ref btt);
+        btree.right=Olustur(bt, indis *2+2, ref btt);
+        return btree;
+    }
+    static void PreOrder(Btree root)
+    {
+        if (root == null) return;
+
+        Console.Write(root.data + " ");
+
+        PreOrder(root.left);
+        PreOrder(root.right);
+    }
+    static void Main(string[] args)
+    {
+        int[] bt = { 1, 2, 3, 4, 5, 6, 7 };
+        Btree root = null;
+        Olustur(bt, 0, ref root);
+        Console.WriteLine("PreOrder gezintisi:");
+        PreOrder(root);
+    }
+}
+----------------------------------------------------------------------
+SORU: int diziyi kullanarak sıralı şekilde linked listle sıralı bir ağaç oluşturan kod:
+public class Block
+{
+    public int data;
+    public Block Next;
+}
+
+public class SortedLinkedList
+{
+    static int count = 0;
+
+    public static Block GetSortedLinkedList(int[] d, int indis = 0, Block first = null, Block last = null)
+    {
+        if (indis > d.Length - 1) return first;
+
+        int data = d[indis];
+        indis++;
+
+        if (first == null)
+        {
+            Block bl = new Block { data = data };
+            return GetSortedLinkedList(d, indis, bl, bl);
+        }
+
+        if (data >= last.data)
+        {
+            Block B = new Block();
+            B.data = data;
+            last.Next = B;
+            last = B;
+        }
+        else
+        {
+            Block head = first;
+            Block temp = null;
+
+            while (head != null)
+            {
+                if (head.data > data)
+                {
+                    Block bl = new Block();
+                    bl.data = data;
+                    bl.Next = head;
+
+                    if (temp != null)
+                        temp.Next = bl;
+                    else
+                        first = bl;
+
+                    break;
+                }
+                temp = head;
+                head = head.Next;
+            }
+        }
+
+        return GetSortedLinkedList(d, indis, first, last);
+    }
+
+    public static void PrintList(Block head)
+    {
+        Block current = head;
+        while (current != null)
+        {
+            Console.Write(current.data + " ");
+            current = current.Next;
+        }
+        Console.WriteLine();
+    }
+
+    public static void Main(string[] args)
+    {
+        int[] dizi = { 4, 2, 7, 1, 3, 5 };
+        Block sortedList = GetSortedLinkedList(dizi);
+        PrintList(sortedList);
+    }
+}
+------------------------------------------------------------------------------------
+SORU: Linked listle in-order şekilde btree oluşturma -ref ile: 
+
+using System;
+
+class Program
+{
+    class Btree
+    {
+        public int data;
+        public Btree left;
+        public Btree right;
+    }
+
+    static void Ekle(ref Btree bt, int data)
+    {
+        if (bt == null)
+        {
+            Btree temp = new Btree();
+            temp.data = data;
+            bt = temp;
+            return;
+        }
+        if (data > bt.data)
+        {
+            if (bt.right != null) Ekle(ref bt.right, data);
+            else
+            {
+                Btree temp = new Btree();
+                temp.data = data;
+                bt.right = temp;
+            }
+        }
+        else
+        {
+            if (bt.left != null) Ekle(ref bt.left, data);
+            else
+            {
+                Btree temp = new Btree();
+                temp.data = data;
+                bt.left = temp;
+            }
+        }
+    }
+
+    static void PrintInorder(Btree bt)
+    {
+        if (bt == null)
+            return;
+
+        PrintInorder(bt.left);
+        Console.Write(bt.data + " ");
+        PrintInorder(bt.right);
+    }
+
+    static void Main()
+    {
+        Btree tree = null;
+
+        Ekle(ref tree, 50);
+        Ekle(ref tree, 30);
+        Ekle(ref tree, 70);
+        Ekle(ref tree, 20);
+        Ekle(ref tree, 40);
+        Ekle(ref tree, 60);
+        Ekle(ref tree, 80);
+
+        Console.WriteLine("Ağaç Inorder Traversal:");
+        PrintInorder(tree);
+    }
+}
+
+-----------------------------------------------------------------------------------
+
+
+

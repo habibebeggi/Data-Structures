@@ -1,0 +1,643 @@
+SORU: 3x3' lük bir matrisin en büyük elemanını recursive olarak bulan kod:
+
+ static int EBBul(int[,] X, int satir, int sutun, int eb)
+ {
+     if (satir >= 3) return eb;
+     int deger = EBBul(X, sutun == 2 ? satir + 1 : satir, (sutun + 1) % 3, eb);
+     if (X[satir, sutun]>deger) deger = X[satir, sutun];
+     return deger;
+ }
+ static void Main(string[] args)
+ {
+     int[,] x = new int[,] { { 0, 0, 1 }, { 0, 1, 2 }, { 7, 2, 3 } };
+     Console.WriteLine(EBBul(x, 0, 0, 1));
+ }
+
+------------------------------------------------------------------------------
+SORU: 3x3' lük bir dizinin her satırdaki elemanlarını ekrana yazdıran ve satır sonlarında 
+o satırın en büyük elemanını ekrana yazdıran kod:
+
+    static int yaz(int[,] x, int indis, int eb)
+    {
+        if (indis >= 9) return 0;
+        int a, b;
+        a = indis / 3;
+        b = indis - a * 3;
+        int deger = 0;
+        deger = yaz(x, indis + 1, eb);
+        Console.Write(x[a, b] + " ");
+        if (x[a, b] > deger) deger = x[a, b];
+
+        if (indis % 3 != 0)
+        {
+            if (eb > deger) deger = eb;
+            else eb = deger;
+            return deger;
+        }
+        Console.WriteLine( "en büyük eleman: "+deger);
+        return 0;
+    }
+
+    static void Main(string[] args)
+    {
+        int[,] x = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }};
+        yaz(x,0,0);
+    }
+
+------------------------------------------------------------------------------
+
+SORU: 10 boyutlu bir dizinin tüm elemanlarının toplamını sadece 1 while ve 1 forla
+bulan kod:
+
+ static void Main(string[] args)
+ {
+     int[,,,,,,,,,] dizi = new int[10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+     int[] k = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+     int toplam = 0;
+     while (k[0] < 10)
+     {
+         toplam += dizi[k[0], k[1], k[2], k[3], k[4], k[5], k[6], k[7], k[8], k[9]];
+         k[9]++;
+         for (int i = 9; i > 0; i--)
+         {
+             if (k[i] >= 10)
+             {
+                 k[i] = 0;
+                 k[i - 1]++;
+             }
+         }
+     }
+     Console.WriteLine(toplam);
+ }
+
+
+------------------------------------------------------------------------------------
+
+SORU: Bu sorunun diğer çözümü - aslında aynı çözüm
+
+public static void Toplam23F(int[,,,,,,,,,] dizi)
+{
+    int[] k = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    int toplam = 0;
+    while (k[0] < 10)
+    {
+        toplam += dizi[k[0], k[1], k[2], k[3], k[4], k[5], k[6], k[7], k[8], k[9]];
+        k[9]++;
+        for (int i = 9; i > 0; i--)
+        {
+            if (k[i] >= 10)
+            {
+                k[i] = 0;
+                k[i - 1]++;
+            }
+        }
+    }
+    Console.WriteLine(toplam);
+}
+        
+-------------------------------------------------------------------------------------
+
+SORU: 4 boyutlu diziyi tek boyutlu diziye cevirme:
+
+static void Main(string[] args)
+{
+    int[,,,] X = new int[1, 2, 3, 20];
+    int indis = 0;
+    int[] donusum = new int[1 * 2 * 3 * 20];
+    X[0, 0, 0, 0] = 1;
+    X[0, 0, 0, 1] = 2;
+    X[0, 0, 0, 2] = 3;
+    for (int i = 0; i < 1; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                for (int l = 0; l < 20; l++)
+                {
+                    donusum[indis] = X[i, j, k, l];
+                    indis++;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < donusum.Length; i++)
+    {
+        Console.WriteLine(donusum[i]);
+    }
+}
+
+----------------------------------------------------------------------------------
+
+SORU: Bir dizinin en büyük elemanını recursive olarak bulan kod:
+
+  static void Main(string[] args)
+  {
+      int[] X = new int[100];
+      X[0] = 500;
+      X[1] = 1400;
+      X[2] = 8;
+      int indis = 0;
+      Console.WriteLine(BuyuguGetır(X, indis));
+  }
+
+  static int BuyuguGetır(int[] a, int indis)
+  {
+      if (indis >= 100) return 0;
+      int b = BuyuguGetır(a, indis + 1);
+      if (a[indis] < b) return b;
+      else return a[indis];
+  }
+
+---------------------------------------------------------------------------------
+
+SORU: Bir dizideki en büyük 5 elemanı bulma: 
+
+ static void Main(string[] args)
+ {
+     int[] X = { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+     int[] enbuyuk = new int[5];
+     for (int i = 0; i < X.Length; i++)
+     {
+         for (int j = i + 1; j < X.Length; j++)
+         {
+             if (X[i] < X[j])
+             {
+                 int temp = X[i];
+                 X[i] = X[j];
+                 X[j] = temp;
+             }
+         }
+     }
+     Console.WriteLine("En büyük 5 eleman: ");
+     for (int k = 0; k < 5; k++)
+     {
+         enbuyuk[k] = X[k];
+         Console.WriteLine(enbuyuk[k]);
+     }
+ }
+
+------------------------------------------------------------------------------------
+
+SORU: Çok boyutlu dizinin en büyük elemanını recursive olarak bulma: 
+
+      static void Main(string[] args)
+    {
+        int[,,,,] x = new int[2, 3, 4, 5, 6];
+
+        // Diziyi bazı değerlerle doldurma
+        x[0, 0, 0, 0, 0] = 1;
+        x[0, 0, 0, 0, 1] = 2;
+        x[0, 0, 0, 0, 2] = 3;
+        x[0, 0, 0, 0, 3] = 4;
+        x[0, 0, 0, 0, 4] = 5;
+
+        x[0, 0, 0, 1, 0] = 6;   // Yeni bir atama
+        x[1, 2, 3, 1, 2] = 10;  // Başka bir örnek atama
+        x[1, 2, 2, 2, 4] = 25;  // Daha fazla atama
+
+        // En büyük elemanı bulma işlemi
+        int enBuyuk = EnBuyukEleman(x);
+        Console.WriteLine("En büyük eleman: " + enBuyuk);
+    }
+
+    static int EnBuyukEleman(int[,,,,] x)
+    {
+        int max = 0;
+        int a = 0, b = 0, c = 0, d = 0, e = 0;
+
+        while (a < 2)
+        {
+            if (b < 3 && c < 4 && d < 5 && e < 6)
+            {
+                if (x[a, b, c, d, e] > max) max = x[a, b, c, d, e];
+                e++;
+            }
+            if (e >= 6) { e = 0; d++; }
+            if (d >= 5) { d = 0; c++; }
+            if (c >= 4) { c = 0; b++; }
+            if (b >= 3) { b = 0; a++; }
+        }
+        return max;
+    }
+
+------------------------------------------------------------------------------------
+
+SORU: Bir dizi içindeki en büyük 5 elemanı (elemanlar rastgele yer almakta) 
+büyükten küçüğe sıralayan kod:
+
+ static void ShiftArray(int[] array, int index)
+ {
+     for (int k = 4; k > index; k--)
+     {
+         array[k] = array[k - 1];
+     }
+ }
+
+ static void Main(string[] args)
+ {
+     int[] X = { 23, 53, 13, 23, 65, 96, 78 };
+     int[] Y = new int[5];
+
+     for (int i = 0; i < X.Length; i++)
+     {
+         for (int j = 0; j < 5; j++)
+         {
+             if (X[i] > Y[j])
+             {
+                 ShiftArray(Y, j);
+                 Y[j] = X[i];
+                 break;
+             }
+         }
+     }
+     Console.WriteLine("En büyük 5 eleman:");
+     foreach (var item in Y)
+     {
+         Console.Write(item + " ");
+     }
+ }
+
+--------------------------------------------------------------------------------------
+
+SORU: Dizi içindeki en büyük 5 elemanı büyükten küçüğe getiren diğer çözüm: 
+
+    static void Main(string[] args)
+    {
+        int[] X = { 23, 53, 13, 23, 65, 96, 78 };
+        int[] Y = new int[5];
+
+        for (int i = 0; i < X.Length; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (X[i] > Y[j])
+                {
+                    ShiftArray(Y, j);
+                    Y[j] = X[i];
+                    break;
+                }
+            }
+        }
+        Console.WriteLine("En büyük 5 eleman:");
+        foreach (var item in Y)
+        {
+            Console.Write(item + " ");
+        }
+    }
+
+    static void ShiftArray(int[] array, int index)
+    {
+        for (int k = 4; k > index; k--)
+        {
+            array[k] = array[k - 1];
+        }
+    }
+
+-----------------------------------------------------------------------------------
+
+SORU: Bir ülkede 100 il var ve her ilin en çok 20 ilçesi, her ilçenin en çok 35 mahallesi ve her mahallede de
+ en çok 200 oy sandığı var. Bu durumda en çok oyun kullanıldığı ikinci ili bulunuz.
+
+  static void Main(string[] args)
+  {
+      int[,,,] X = new int[100, 20, 35, 200];
+      X[0, 0, 0, 0] = 2598;
+      X[1, 2, 4, 6] = 2590;
+      X[3, 7, 12, 15] = 1263;
+      X[5, 10, 18, 25] = 1000;
+      X[2, 15, 20, 100] = 700;
+
+      int[] encok = new int[100 * 20 * 35 * 200];
+      int toplam = 0;
+      int[] indis = new int[100];
+
+      for (int i = 0; i < 100; i++)
+      {
+          for (int j = 0; j < 20; j++)
+          {
+              for (int k = 0; k < 35; k++)
+              {
+                  for (int l = 0; l < 200; l++)
+                  {
+
+                      toplam += X[i, j, k, l];
+                  }
+              }
+          }
+          if (encok[0] < toplam)
+          {
+              encok[1] = encok[0]; //2. eb degeri gunceller
+              encok[0] = toplam; //eb degeri guncelle
+              indis[0] = i;
+          }
+          else if (toplam > encok[1])
+          {
+              encok[1] = toplam;
+              indis[1] = i;
+          }
+      }
+      Console.WriteLine($"İkinci en çok oy alan: {encok[1]}");
+  }
+
+-----------------------------------------------------------------------------------------------
+
+SORU: 100 il var.En çok 20 ilçe var.En çok 35 mahalle var.En çok 200 sandık var.
+En çok oy kullanılan il:
+
+public static void EncokOyKullanan()
+{
+    int[,,,] X = new int[100, 20, 35, 200];
+    int encok = 0;
+    for (int i = 0; i < 100; i++)
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            for (int k = 0; k < 35; k++)
+            {
+                for (int l = 0; l < 200; l++)
+                {
+                    if (encok < X[i, j, k, l])
+                    {
+                        encok = X[i, j, k, l];
+                    }
+                }
+            }
+        }
+    }
+    Console.WriteLine(encok);
+}
+
+--------------------------------------------------------------------------------------------
+
+SORU: En çok oy kullanan 5. ili bulunuz. -> her ilin oy kullananların sayısını diziye at sonra topla
+
+
+
+----------------------------------------------------------------------------------------
+
+SORU: Klavyeden boyutları ve bu boyutların büyüklüğü girilen dizinin yine klavyeden girilen elemanının adresini bul.
+
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Dizi kaç boyutlu olsun");
+        int boyutSayisi= Convert.ToInt32(Console.ReadLine());
+        int[] boyutDizisi = new int[boyutSayisi];
+        for(int i = 0; i<boyutSayisi; i++)
+        {
+            Console.WriteLine((i+1)+ ". boyutun uzunluğunu girin");
+            int boyut= Convert.ToInt32(Console.ReadLine());
+            boyutDizisi[i] = boyut;
+        }
+        int[] arananElemanDizi= new int [boyutSayisi];
+        Console.WriteLine("Adresini bulmak istediğiniz elemanın;");
+        for(int i = 0; i < boyutSayisi; i++)
+        {
+            Console.WriteLine((i+1)+". boyuttaki eleman numarasını giriniz");
+            int arananE=Convert.ToInt32(Console.ReadLine());
+            arananElemanDizi[i] = arananE;
+        }
+
+        int adres = 0;
+        int sayac = 1;
+        for(int i = 0;i<boyutSayisi; i++)
+        {
+            int tempAdres = arananElemanDizi [i];
+            int tempSayac = sayac;
+            for (int j = 0; j < (boyutSayisi-(i+1)); j++)
+            {
+                tempAdres = tempAdres * boyutDizisi[tempSayac];
+                tempSayac++;
+            }
+            sayac++;
+            adres += tempAdres;
+        }
+        Console.WriteLine(adres*4);
+        Console.ReadLine();
+    }
+
+---------------------------------------------------------------------------------------
+
+SORU: 5 boyutlu dizinin en buyuk elemanını bulan recursive kod:
+
+ public static int FindMax(int[,,,,] array, int index, int max)
+ {
+     int a, b, c, d, e;
+     a = index / 840;
+     b = (index-a*840) / 210;
+     c = (index - b * 210 - a * 840) / 42;
+     int c2 = index % 30;
+     Console.WriteLine(c);
+     Console.WriteLine(c2);
+     d = (index - c * 42 - b * 210 - a * 840) / 7;
+     e = index % 7;
+
+     if (a >= 3) return max;
+     if (array[a, b, c, d, e] > max)
+     {
+         max = array[a, b, c, d, e];
+     }
+     return FindMax(array, index+1, max);
+ }
+
+-------------------------------------------------------------------------------------
+
+SORU: Bir matrisin en büyük elemanını bulan kod:
+
+  static int MatrisEB(int[,] x, int satir, int sutun, int eb)
+  {
+      if (satir >= 3) return eb;
+      int deger = MatrisEB(x, sutun == 2 ? satir + 1 : satir, (sutun + 1) % 3, eb);
+      //Console.WriteLine(x[satir,sutun]);
+      if (x[satir, sutun] > deger) deger = x[satir, sutun];
+      return deger;
+  }
+
+  public static void Main(string[] args)
+  {
+      int[,] a = new int[,] { { 0, 0, 1 }, { 0, 1, 2 }, { 7, 2, 3 } };
+      Console.WriteLine(MatrisEB(a, 0, 0, 1));
+  }
+
+-----------------------------------------------------------------------------------------
+
+SORU: 3 boyutlu bir dizideki negeatif ve pozitif sayıların toplamını bulan kod:
+
+public class Program
+{
+    public class PozitifNegatifSay
+    {
+       
+        public int PozitifSayilarinSayisi(int[,,] dizi, int x, int y, int z, int boyutX, int boyutY, int boyutZ)
+        {
+            
+            if (x == boyutX) return 0;
+
+            int sonrakiX = z == boyutZ - 1 && y == boyutY - 1 ? x + 1 : x;
+            int sonrakiY = z == boyutZ - 1 ? (y + 1) % boyutY : y;
+            int sonrakiZ = (z + 1) % boyutZ;
+            int sayi = dizi[x, y, z] > 0 ? 1 : 0;
+            return sayi + PozitifSayilarinSayisi(dizi, sonrakiX, sonrakiY, sonrakiZ, boyutX, boyutY, boyutZ);
+        }
+
+        public int NegatifSayilarinToplami(int[,,] dizi, int x, int y, int z, int boyutX, int boyutY, int boyutZ)
+        {
+           
+            if (x == boyutX) return 0;
+
+            int sonrakiX = z == boyutZ - 1 && y == boyutY - 1 ? x + 1 : x;
+            int sonrakiY = z == boyutZ - 1 ? (y + 1) % boyutY : y;
+            int sonrakiZ = (z + 1) % boyutZ;
+            int toplam = dizi[x, y, z] < 0 ? dizi[x, y, z] : 0;
+            return toplam + NegatifSayilarinToplami(dizi, sonrakiX, sonrakiY, sonrakiZ, boyutX, boyutY, boyutZ);
+        }
+    }
+        static void Main(string[] args)
+    {
+        int[,,] dizi = {
+            {
+                {1, -2, 3},
+                {-4, 5, -6},
+                {7, -8, 9}
+            },
+            {
+                {-1, 2, -3},
+                {4, -5, 6},
+                {-7, 8, -9}
+            },
+            {
+                {1, 2, 3},
+                {4, -5, 6},
+                {-7, 8, -9}
+            }
+        };
+        int boyutX = 3, boyutY = 3, boyutZ = 3;
+        PozitifNegatifSay sayici = new PozitifNegatifSay();
+        int pozitifSayilar = sayici.PozitifSayilarinSayisi(dizi, 0, 0, 0, boyutX, boyutY, boyutZ);
+        int negatifToplam = sayici.NegatifSayilarinToplami(dizi, 0, 0, 0, boyutX, boyutY, boyutZ);
+
+        Console.WriteLine("Pozitif sayılar: " + pozitifSayilar);
+        Console.WriteLine("Negatif sayıların toplamı: " + negatifToplam);
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+
+SORU: Row- amjor düzende RAM' deki indisi hesaplayan metot: 
+
+public class Program
+{
+    public class DizidekiIndis
+    {
+        public int IndisHesapla(int[] boyutlar, int[] indisler)
+        {
+            int boyut = boyutlar.Length;
+            int ramIndisi = 0;
+            int carpimFaktoru = 1;
+
+            for (int i = boyut - 1; i >= 0; i--)
+            {
+                ramIndisi += indisler[i] * carpimFaktoru;
+                carpimFaktoru *= boyutlar[i];
+            }
+
+            return ramIndisi;
+        }
+
+    }
+        public static void Main()
+        {
+            int[] boyutlar = { 3, 4, 5 }; // 3D boyutlu dizi
+            int[] indisler = { 2, 1, 3 };
+            DizidekiIndis hesapla = new DizidekiIndis();
+            int ramIndisi = hesapla.IndisHesapla(boyutlar, indisler);
+            Console.WriteLine("RAM'deki indis: " + ramIndisi);
+        }
+    }
+---------------------------------------------------------------------------------------------
+SORU: İki boyutlu dizinin verilen satır ve sütunundaki elemanların toplamını recursive olarak toplayan kod:
+
+class Program
+{
+    static int Topla2D(int[,] x, int satir, int sutun)
+    {
+        int a = x[satir, sutun];
+        sutun++;
+        if (sutun >= 4)
+        {
+            satir++;
+            sutun = 0;
+            if (satir >= 5) return a;
+        }
+        return a + Topla2D(x, satir, sutun);
+    }
+    static void Main(string[] args)
+    {
+        int[,] x = new int[5, 4]
+       {
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 },
+            { 17, 18, 19, 20 }
+       };
+        int toplam = Topla2D(x, 0, 0);
+        Console.WriteLine(toplam);
+    }
+}
+---------------------------------------------------------------------------------------
+SORU: Yukarıdaki sorunun indis tabanlı çözümü:
+
+class Program
+{
+    static int Topla2D(int[,] x, int indis)
+    {
+        int row = indis / 4;
+        int col = indis % 4;
+        if (row >= 5) return 0;
+        return x[row, col]+Topla2D(x,indis+1);
+    }
+    static void Main(string[] args)
+    {
+        int[,] x = new int[5, 4]
+       {
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 },
+            { 17, 18, 19, 20 }
+       };
+        int toplam = Topla2D(x,0);
+        Console.WriteLine(toplam);
+    }
+}
+------------------------------------------------------------------------------------------
+SORU: 2D matriste her satırın en buyuk elemanını dönen kod:
+class Program
+{
+  static void EBSatir(int[,] x, int satir)
+    {
+        int max = x[satir, 0];
+       for(int sutun=1;sutun<3; sutun++)
+        {
+            if (x[satir, sutun] >max) max = x[satir, sutun];
+        }
+        Console.WriteLine($"Satir: {satir}, en buyuk eleman: {max}");
+    }
+    static void Main(string[] args)
+    {
+        int[,] x = new int[3, 3]
+        {
+            { 1, 5, 3 },
+            { 8, 2, 7 },
+            { 4, 9, 6 }
+        };
+
+        // Her satır için en büyük değeri yazdır
+        for (int i = 0; i < 3; i++)
+        {
+            EBSatir(x, i);
+        }
+    }
+}
+-------------------------------------------------------------------

@@ -1,0 +1,993 @@
+SORU: Dizilerle stack oluşturma:
+
+public class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if (sp <= -1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+
+    static int Peek()
+    {
+        return stack[sp];
+    }
+    static void Main(string[] args)
+    {
+        push(100);
+        push(50);
+        push(70);
+        Console.WriteLine(pop());
+        Console.WriteLine(pop());
+        Console.WriteLine(Peek());
+    }
+}
+----------------------------------------------------------------------------
+
+SORU: Diziyle oluşturulmuş stack' a string atıp bunu geri çekin:
+
+public class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if(sp<=-1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        string st = "merhaba";
+        for(int i = 0;i<st.Length;i++)
+        {
+            push(st[i]);
+        }
+        while (sp != -1)
+        {
+            Console.WriteLine((char)pop());
+        }
+    }
+}
+
+----------------------------------------------------------------------------------
+
+SORU: Girilen stringin palindromik olup olmadığını ekrana basan kod:
+
+public class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if(sp<=-1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        string st = "abaca";
+        int hata = 0;
+        for (int i = 0; i < st.Length; i++)
+        {
+            push(st[i]);
+        }
+        for (int i = 0;i<st.Length; i++)
+        {
+            if (pop() != st[i]) { hata = 1; break; }
+        }
+        if(hata==0) Console.WriteLine("Palindromik");
+        else Console.WriteLine("Palindromik değil");
+    }
+}
+
+
+******************************* diğer çözüm: **************************************
+
+public class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if (sp <= -1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+
+    static int Peek()
+    {
+        return stack[sp];
+    }
+    static void Main(string[] args)
+    {
+        string str = "efe";
+        bool sonuc = PalindromMu(str);
+        Console.WriteLine(sonuc);
+    }
+    public static bool PalindromMu(string str)
+    {
+        Stack<char> stack = new Stack<char>();
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            stack.Push(str[i]);
+        }
+
+        string reversedStr = "";
+        while (stack.Count > 0)
+        {
+            reversedStr += stack.Pop();
+        }
+        return str == reversedStr;
+    }
+}
+
+-------------------------------------------------------------------------------
+
+SORU: Açık parantezlerin uygun şekilde kapatılıp kapatılmadığını kontrol eden kod: 
+
+public class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if(sp<=-1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        string st = "{{[((()))]}}";
+        int hata = 0;
+        string sol = "([{";
+        string sag = ")]}";
+
+        for(int i = 0;i<st.Length;i++)
+        {
+            int ind=sol.IndexOf(st[i]);
+            if(ind!=-1) { push(sag[ind]); }
+            else
+            {
+                ind=sag.IndexOf(st[i]);
+                if (ind != -1)
+                {
+                    if (pop() != st[i])
+                    {
+                        hata = 1;
+                        break;
+                    }
+                }
+            }
+        }
+        if(hata==0) Console.WriteLine("Hatasız");
+        else Console.WriteLine("Hatalı");
+    }
+
+-----------------------------------------------------------------------------------------
+SORU: Linked listle stack oluşturma:
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    
+    }
+    static Block sp = null;
+    static void push(int data)
+    {
+        Block tmp=new Block();
+        tmp.data = data;
+        if (sp != null)
+        {
+            tmp.prev = sp;
+        }
+        sp = tmp;
+    }
+    
+    static int pop()
+    {
+        if (sp == null) return -1;
+        int data = sp.data;
+        sp = sp.prev;
+        return data;
+    }
+    static int stackCount()
+    {
+        int a = 0;
+        Block tmp = sp;
+        while (tmp != null)
+        {
+            tmp = tmp.prev;
+            a++;
+        }
+        return a;
+    }
+    static int peek()
+    {
+        if(sp == null) return -1;
+        int data = sp.data;
+        return data;
+    }
+    static void Main(string[] args)
+    {
+        push(100);
+        push(74);
+        push(12);
+        push(123);
+        push(200);
+
+         Console.WriteLine("Stack Count: " + stackCount());
+        Console.WriteLine("Peek: " + peek());
+        Console.WriteLine("Pop: " + pop());
+        Console.WriteLine("Pop: " + pop());
+        Console.WriteLine("Pop işlemlerinden sonra Stack Count: " + stackCount());
+        Console.WriteLine("Pop işleminden sonra Peek: " + peek());
+    }
+}
+-----------------------------------------------------------------------------------------
+
+SORU: Çiftli linked listle stack oluşturma:
+
+public class Program
+{
+  class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static Block sp = null;
+    static void push(int data)
+    {
+        Block bl = new Block();
+        bl.data = data;
+        bl.next = null;
+        bl.prev = nul
+        if (sp == null) { sp = bl; return; }
+        bl.next = sp;
+        sp.prev = bl;
+        sp = bl;
+    }
+    static int pop()
+    {
+        int tmp = sp.data;
+        sp = sp.next;
+        return tmp;
+    }
+
+    static int Peek()
+    {
+        return sp.data;
+    }
+    static void Main(string[] args)
+    {
+        push(5);
+        push(74);
+        push(789);
+        Console.WriteLine(pop());
+        Console.WriteLine(pop());
+        Console.WriteLine(Peek()) ;
+
+    }
+}
+------------------------------------------------------------------------
+SORU: 
+
+using System;
+
+class Program
+{
+    static int[] stack = new int[100];
+    static int sp = -1;
+    static void push(int data)
+    {
+        if (sp >= stack.Length - 1) return;
+        sp++;
+        stack[sp] = data;
+    }
+    static int pop()
+    {
+        if (sp <= -1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static int Peek()
+    {
+        return stack[sp];
+    }
+    static void Main(string[] args)
+    {
+        string infix = "a+b*c/d-e";
+        string postfix = "";
+        string op = "$-+/*()";
+        int[] precedence = { 0, 1, 1, 2, 2 }; 
+
+        push((byte)'$'); 
+
+        for (int i = 0; i < infix.Length; i++)
+        {
+            char currentChar = infix[i];
+            if (op.IndexOf(currentChar) == -1)
+            {
+                postfix += currentChar;  
+            }
+            else if (currentChar == '(')
+            {
+                push((byte)'(');  
+            }
+            else if (currentChar == ')')
+            {
+                while (Peek() != (byte)'(')
+                {
+                    postfix += (char)pop();
+                }
+                pop();  
+            }
+            else
+            {
+                while (op.IndexOf(currentChar) != -1 && precedence[op.IndexOf(currentChar)] <= precedence[op.IndexOf((char)Peek())])
+                {
+                    postfix += (char)pop(); 
+                }
+                push((byte)currentChar);
+            }
+        }
+
+        while (Peek() != (byte)'$')
+        {
+            postfix += (char)pop();
+        }
+
+        Console.WriteLine(postfix);
+    }
+}
+
+
+------------------------------------------------------------------------
+SORU: Hazır stacklar ile infix postfix dönüşümü:
+
+ class tekli
+ {
+     public int data;
+     public tekli next;
+ }
+ class Program
+ {
+     static bool isAlpha(char c)
+     {
+         if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') return true;
+         return false;
+     }
+     static bool isDigit(char c)
+     {
+         if (c >= '0' && c <= '9') return true;
+         return false;
+     }
+
+     static bool isOperator(char c)
+     {
+         return (!isAlpha(c) && !isDigit(c));
+     }
+     static int getPriority(char C)
+     {
+         if (C == '-' || C == '+') return 1;
+         else if (C == '*' || C == '/') return 2;
+         else if (C == '^') return 3;
+         return 0;
+     }
+     static String Reverse(char[] str, int start, int end)
+     {
+         char temp;
+         while (start < end)
+         {
+             temp = str[start];
+             str[start] = str[end];
+             str[end] = temp;
+             start++;
+             end--;
+         }
+         return String.Join("", str);
+     }
+
+     static String infixToPostfix(char[] infix1)
+     {
+         string infix = '(' + String.Join("", infix1) + ')';
+         int l = infix.Length;
+         Stack<char> char_stack = new Stack<char>();
+         string output = "";
+         for (int i = 0; i < l; i++)
+         {
+             if (isAlpha(infix[i]) || isDigit(infix[i]))
+             {
+                 output += infix[i];
+             }
+
+             else if (infix[i] == '(')
+             {
+                 char_stack.Push('(');
+             }
+             else if (infix[i] == ')')
+             {
+                 while (char_stack.Peek() != '(')
+                 {
+                     output += char_stack.Peek();
+                     char_stack.Pop();
+                 }
+                 char_stack.Pop();
+             }
+             else
+             {
+                 if (isOperator(char_stack.Peek()))
+                 {
+                     while ((getPriority(infix[i]) < getPriority(char_stack.Peek())) || (getPriority(infix[i]) <= getPriority(char_stack.Peek())
+                  && infix[i] == '^'))
+                     {
+                         output += char_stack.Peek();
+                         char_stack.Pop();
+                     }
+                     char_stack.Push(infix[i]);
+                 }
+             }
+         }
+         while (char_stack.Count != 0)
+         {
+             output += char_stack.Pop();
+         }
+         return output;
+     }
+
+     static String infixToPrefix(char[] infix)
+     {
+         int l = infix.Length;
+         string infix1 = Reverse(infix, 0, l - 1);
+         infix = infix1.ToCharArray();
+
+         for (int i = 0; i < l; i++)
+         {
+             if (infix[i] == '(')
+             {
+                 infix[i] = ')';
+                 i++;
+             }
+             else if (infix[i] == ')')
+             {
+                 infix[i] = '(';
+                 i++;
+             }
+         }
+         string prefix = infixToPostfix(infix);
+         prefix = Reverse(prefix.ToCharArray(), 0, l - 1);
+         return prefix;
+     }
+
+     static void Main(string[] args)
+     {
+
+         string s = ("x+y*z/w+u");
+         Console.WriteLine(infixToPrefix(s.ToCharArray()));
+     }
+
+ }
+
+********************************************** diğer çözüm *******************************
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Stack<char> st = new Stack<char>();
+        string infix = "a+b+c-d";
+        string postfix = "";
+        string op = "$+-*/()";
+        string deger = "0112200"; 
+
+        st.Push('$');
+
+        for (int i = 0; i < infix.Length; i++)
+        {
+            if (op.IndexOf(infix[i]) == -1)
+            {
+                postfix += infix[i];
+                continue;
+            }
+
+            if (infix[i] == '(')
+            {
+                st.Push(infix[i]);
+                continue;
+            }
+
+            if (infix[i] == ')')
+            {
+                while (st.Count > 0 && st.Peek() != '(')
+                {
+                    postfix += st.Pop();
+                }
+                st.Pop(); // Pop the '(' from the stack
+                continue;
+            }
+
+            while (st.Count > 0 && deger[op.IndexOf(infix[i])] <= deger[op.IndexOf(st.Peek())])
+            {
+                postfix += st.Pop();
+            }
+            st.Push(infix[i]);
+        }
+
+        while (st.Count > 1)
+        {
+            postfix += st.Pop();
+        }
+
+        Console.WriteLine("Infix Expression: " + infix);
+        Console.WriteLine("Postfix Expression: " + postfix);
+    }
+
+-----------------------------------------------------------------------------------------
+
+SORU: Parantezli infixi postfixe çeviren kod:
+
+ class Program
+ {
+     static void Main(string[] args)
+     {
+         // Infix to Postfix conversion
+         Stack<char> st = new Stack<char>();
+         string infix = "(a*b)+(c-d)/f";
+         string postfix = "";
+         string op = "$+-*/()";
+         string deger = "0112200"; // 0: $, 1: +, 2: -, 3: *, 4: /
+
+         st.Push('$');
+
+         for (int i = 0; i < infix.Length; i++)
+         {
+             char ch = infix[i];
+             int degerIndex = op.IndexOf(ch);
+
+             // If the character is an operand
+             if (degerIndex == -1)
+             {
+                 postfix += ch;
+                 continue;
+             }
+
+             // If the character is '(', push it to stack
+             if (ch == '(')
+             {
+                 st.Push(ch);
+                 continue;
+             }
+
+             // If the character is ')', pop until '('
+             if (ch == ')')
+             {
+                 while (st.Count > 0 && st.Peek() != '(')
+                 {
+                     postfix += st.Pop();
+                 }
+                 st.Pop(); // Pop the '(' from the stack
+                 continue;
+             }
+
+             // Handle operator precedence
+             while (st.Count > 0 && deger[degerIndex] <= deger[op.IndexOf(st.Peek())])
+             {
+                 postfix += st.Pop();
+             }
+             st.Push(ch);
+         }
+
+         // Pop remaining operators from the stack
+         while (st.Count > 1)
+         {
+             postfix += st.Pop();
+         }
+
+         Console.WriteLine("Infix Expression: " + infix);
+         Console.WriteLine("Postfix Expression: " + postfix);
+
+         // Paranthesis balance check
+         bool hata = false;
+         Stack<char> paranthesisStack = new Stack<char>();
+
+         for (int j = 0; j < infix.Length; j++)
+         {
+             char currentChar = infix[j];
+
+             if (currentChar == '(')
+             {
+                 paranthesisStack.Push(currentChar);
+             }
+             else if (currentChar == ')')
+             {
+                 if (paranthesisStack.Count == 0)
+                 {
+                     hata = true; // Unmatched closing bracket
+                     break;
+                 }
+                 paranthesisStack.Pop(); // Match with the last opening bracket
+             }
+         }
+
+         if (paranthesisStack.Count > 0)
+         {
+             hata = true; // Unmatched opening brackets
+         }
+
+         if (hata)
+             Console.WriteLine("Hata: Parantezler dengesiz.");
+         else
+             Console.WriteLine("Doğru: Parantezler dengeli.");
+     }
+ }
+
+-------------------------------------------------------------------------------------
+
+SORU: Postfixi byte a cevirip infixini bulan kod: 
+
+class Program
+{
+    static int topla(int a, int b)
+    {
+        return a + b;
+    }
+
+    static int cikar(int a, int b)
+    {
+        return a - b;
+    }
+
+    static int carp(int a, int b)
+    {
+        return a * b;
+    }
+
+    static int bol(int a, int b)
+    {
+        if (b == 0) return 0;
+        return a / b;
+    }
+
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if (sp <= -1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        string postfix = "ab*c+d-";
+        string op = "/+-*";
+        for (int i = 0; i < postfix.Length; i++)
+        {
+            if(op.IndexOf(postfix[i]) == -1)
+            {
+                push((byte)postfix[i]);
+                continue;
+            }
+            int op1 = pop();
+            int op2 = pop();
+            int sonuc = 0;
+
+            if (postfix[i] == '+')
+            {
+                sonuc = topla(op1, op2);
+            }
+            else if (postfix[i] == '-')
+            {
+                sonuc = cikar(op2, op1);
+            }
+            else if (postfix[i] == '*')
+            {
+                sonuc = carp(op1, op2);
+            }
+            else if(postfix[i] == '/')
+            {
+                sonuc = bol(op1, op2);
+            }
+            push(sonuc);
+        }
+        Console.WriteLine(pop());
+    }
+}
+-----------------------------------------------------------------------------
+
+SORU: Infixi sayısallaştıran kod:
+
+class Program
+{
+    static int topla(int a, int b)
+    {
+        return a + b;
+    }
+
+    static int cikar(int a, int b)
+    {
+        return a - b;
+    }
+
+    static int carp(int a, int b)
+    {
+        return a * b;
+    }
+
+    static int bol(int a, int b)
+    {
+        if (b == 0) return 0;
+        return a / b;
+    }
+
+    static int[] stack = new int[100];
+    static int sp = -1;
+
+    static void push(int data)
+    {
+        if (sp >= stack.Length) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static int pop()
+    {
+        if (sp <= -1) return -1;
+        int tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        string postfix = "ab*c+d-";
+        string degisken = "abcd";
+        int[] deger = { 1, 1, 1, 1 };
+        string op = "/+-*";
+
+        for (int i = 0; i < postfix.Length; i++)
+        {
+            if(op.IndexOf(postfix[i]) == -1)
+            {
+               int indis=degisken.IndexOf(postfix[i]);
+                push(deger[indis]);
+                continue;
+            }
+            int op1 = pop();
+            int op2 = pop();
+            int sonuc = 0;
+
+            if (postfix[i] == '+')
+            {
+                sonuc = topla(op1, op2);
+            }
+            else if (postfix[i] == '-')
+            {
+                sonuc = cikar(op2, op1);
+            }
+            else if (postfix[i] == '*')
+            {
+                sonuc = carp(op1, op2);
+            }
+            else if(postfix[i] == '/')
+            {
+                sonuc = bol(op1, op2);
+            }
+            push(sonuc);
+        }
+        Console.WriteLine(pop());
+    }
+}
+
+----------------------------------------------------------------------------
+
+SORU: Infix postfix dönüşümü: 
+class Program
+{
+    static char[] stack = new char[100];
+    static int sp = -1;
+
+    static void push(char data)
+    {
+        if (sp >= stack.Length - 1) return;
+        sp++;
+        stack[sp] = data;
+    }
+
+    static char pop()
+    {
+        if (sp <= -1) return '$';
+        char tmp = stack[sp];
+        sp--;
+        return tmp;
+    }
+
+    static char Peek()
+    {
+        return stack[sp];
+    }
+
+    static int Oncelik(char op)
+    {
+        if (op == '+' || op == '-') return 1;
+        if (op == '*' || op == '/') return 2;
+        return 0;
+    }
+
+    static void Main(string[] args)
+    {
+        string infix = "a+b*c/d-e";
+        string postfix = "";
+        string op = "$-+/*()";
+
+        push('$');
+        for (int i = 0; i < infix.Length; i++)
+        {
+            char currentChar = infix[i];
+
+            if ((currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z'))
+            {
+                postfix += currentChar;
+            }
+            else if (currentChar == '(')
+            {
+                push(currentChar);
+            }
+            else if (currentChar == ')')
+            {
+                while (Peek() != '(')
+                {
+                    postfix += pop();
+                }
+                pop();
+            }
+            else if (op.IndexOf(currentChar) != -1)
+            {
+                while (Oncelik(Peek()) >= Oncelik(currentChar))
+                {
+                    postfix += pop();
+                }
+                push(currentChar);
+            }
+        }
+
+        while (Peek() != '$')
+        {
+            postfix += pop();
+        }
+
+        Console.WriteLine(postfix);
+    }
+}
+
+----------------------------------------------------------------------------------------
+SORU: Stack ile infixi postfixe dönüştüren kod: 
+
+class Program
+{
+    static int Oncelik(char op)
+    {
+        if (op == '*' || op == '/') return 2;
+        if (op == '+' || op == '-') return 1;
+        return 0;
+    }
+
+    static bool IsOperand(char c)
+    {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    static bool IsOperator(char c)
+    {
+        return c == '+' || c == '-' || c == '*' || c == '/';
+    }
+
+    static void Main(string[] args)
+    {
+        string infix = "a+b*c-d";
+        string postfix = "";
+        Stack<char> stack = new Stack<char>();
+        stack.Push('$');
+
+        for (int i = 0; i < infix.Length; i++)
+        {
+            char currentChar = infix[i];
+
+            if (IsOperand(currentChar))
+            {
+                postfix += currentChar;
+            }
+            else if (currentChar == '(')
+            {
+                stack.Push(currentChar);
+            }
+            else if (currentChar == ')')
+            {
+                while (stack.Peek() != '(')
+                {
+                    postfix += stack.Pop();
+                }
+                stack.Pop();
+            }
+            else if (IsOperator(currentChar))
+            {
+                while (Oncelik(stack.Peek()) >= Oncelik(currentChar))
+                {
+                    postfix += stack.Pop();
+                }
+                stack.Push(currentChar);
+            }
+        }
+
+        while (stack.Peek() != '$')
+        {
+            postfix += stack.Pop();
+        }
+
+        Console.WriteLine("Postfix İfade: " + postfix);
+    }
+}
+-------------------------------------------------------------------------
+

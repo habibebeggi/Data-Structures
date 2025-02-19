@@ -1,0 +1,599 @@
+KUYRUKLAR:
+Kuyruk problemin doğasına göre oluşturulur. FIFO veya LIFO mantığına göre çalışır.
+Eleman eklemek için enqueue çıkarmak için dequeue kullanılır. stackta 1 pointer dolayısıyla 
+bir giriş ve çıkış varken kuyrukta front ve rear olarak tanımlanan 2 pointer vardır ve giriş ve çıkışlar ayrıdır.
+Diziler ve linked listlerle oluşturulur.
+----------------------------------------------------------------------------
+SORU: Diziyle kuyruk kodlama:
+
+class Program
+{
+    static int[] queue = new int[100];
+    static int front = 0;
+    static int rear = -1;
+
+    static int Count()
+    {
+        return rear - front + 1;
+    }
+
+    static void VeriHareketi()
+    {
+        for (int i = 0; i < Count(); i++)
+        {
+            queue[i] = queue[i + front];
+        }
+        rear = rear - Count();
+        front = 0;
+    }
+
+    static void Enqueue(int data)
+    {
+        if (rear == queue.Length - 1) VeriHareketi();
+        rear++;
+        queue[rear] = data;
+        Console.WriteLine($"{data} kuyruğa eklendi.");
+    }
+
+    static int Dequeue()
+    {
+        int data = queue[front];
+        front++;
+        Console.WriteLine($"{data} kuyruktan çıktı.");
+        return data;
+    }
+
+    static void Main(string[] args)
+    {
+        Enqueue(10);
+        Enqueue(20);
+        Enqueue(25);
+        Dequeue();
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU: Diziyle kuyruk kodlama:
+
+class Program
+{
+    static int[] queue = new int[100];
+    static int front = 0;
+    static int rear = -1;
+
+    static int elemanSayisi()
+    {
+        return rear - front + 1; 
+    }
+
+    static void enqueu(int data)
+    {
+        rear++;
+        queue[rear] = data;
+    }
+
+    static int dequeue()
+    {
+        int tmp = queue[front];
+        front++;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        enqueu(3);
+        enqueu(7);
+        enqueu(8);
+        enqueu(9);
+
+        Console.WriteLine(dequeue());
+    }
+}
+
+-------------------------------------------------------------------------------------
+SORU:  Tekli linked listle kuyruk oluşturma:
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static int[] queue = new int[100];
+    static Block front = null;
+    static Block rear = null;
+
+    static void Enqueue(int data)
+    {
+        Block bl = new Block();
+        bl.data = data;
+        if(rear == null) front = bl;
+        else
+        {
+            rear.next = bl;
+            bl.prev = rear;
+        }
+        rear = bl;
+    }
+    
+    static int Dequeue()
+    {
+        int a = 1;
+        int data = front.data;
+        if (front.next != null) front.next.prev = null;
+        else rear = null;
+        front = front.next;
+        return data;
+    }
+    static void Main(string[] args)
+    {
+        Enqueue(10);
+        Enqueue(20);
+        Enqueue(30);
+
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+    }
+}
+-------------------------------------------------------------------------------------
+SORU: Çiftli linked listle kuyruk oluşturma kodu:
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static Block front = null;
+    static Block rear = null;
+
+    static void EkleLinked(int data)
+    {
+        Block bl = new Block();
+        bl.data = data;
+        if(front == null)
+        {
+            front = bl;
+            rear = bl;
+            return;
+        }
+        bl.prev = rear;
+        rear.next = bl;
+        rear=bl;
+    }
+
+    static int GetirLinked()
+    {
+        if (front == null) return -1;
+        int data = front.data;
+        front = front.next;
+        if (front != null) front.prev = null;
+        else rear = null;
+        return data;
+    }
+    static void Main(string[] args)
+    {
+        EkleLinked(10);
+        EkleLinked(20);
+        EkleLinked(70);
+
+        Console.WriteLine(GetirLinked());
+        Console.WriteLine(GetirLinked());
+        Console.WriteLine(GetirLinked());
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+SORU: Çiftli linked listle kuyruk oluşturma:
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static Block front = null;
+    static Block rear = null;
+
+    static void Enqueue(int data)
+    {
+        Block bl = new Block();
+        bl.data = data;
+        if(rear == null) front = bl;
+        else
+        {
+            rear.next = bl;
+            bl.prev = rear;
+        }
+        rear = bl;
+    }
+    
+    static int Dequeue()
+    {
+        int data = front.data;
+        if (front.next != null) front.next.prev = null;
+        else rear = null;
+        front = front.next;
+        return data;
+    }
+    static void Main(string[] args)
+    {
+        Enqueue(10);
+        Enqueue(20);
+        Enqueue(30);
+
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+    }
+}
+
+--------------------------------------------------------------------------------------
+SORU: Yukarıdakinin diğer çözümü: 
+
+class Program
+{
+    class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static Block front = null;
+    static Block rear = null;
+
+    static void Enqueue(int data)
+    {
+        Block bl = new Block();
+        bl.data = data;
+        bl.next = null;
+        bl.prev = null;
+        if (rear == null)
+        {
+            front = bl;
+            rear = bl;
+            return;
+        }
+        rear.next = bl;
+        bl.prev = rear;
+        rear = bl;
+    }
+
+    static int Dequeue()
+    {
+        int tmp = front.data;
+        front= front.next;
+        if (front == null) rear = null;
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        Enqueue(10);
+        Enqueue(20);
+        Enqueue(30);
+
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+        Console.WriteLine(Dequeue());
+    }
+}
+
+------------------------------------------------------------------
+SORU: Öncelikle queue dizimize 5 eleman atsak sonra bunları dequeue yapsak ardından 6 tane eleman atmaya 
+kalktığımızda out of range hatası alırız. Çünkü elimizdeki pointerları(front ve rear) hiç azaltmadık.
+Bunun çözümü kuyruğu dairesel hale getirmektir. Yani önden hizmet ettiğimiz veriyi dequeue yaptığımız eleman sayısı kadarki boşalan yeri tekrar kullanabilmek için bütün verileri başa çekiyoruz
+Bunun için;
+
+class Program
+{
+    static int[] queue = new int[100];
+    static int front = 0;
+    static int rear = -1;
+
+    static int elemanSayisi()
+    {
+        return rear - front + 1; 
+    }
+
+    static void enqueu(int data)
+    {
+        rear++;
+        rear = rear % 10; //yani dizideki pointerları sürekli dizinin sınırları içinde kalacak şekilde optimize ediyoruz
+        queue[rear] = data;
+    }
+
+    static int dequeue()
+    {
+        int tmp = queue[front];
+        front++;
+        front = front % 10;  // Burada mod alabileceğimiz gibi kuyruğumuzu dinamik tutmak adına front = front% queue.length de yazabiliriz.
+        return tmp;
+    }
+    static void Main(string[] args)
+    {
+        enqueu(3);
+        enqueu(7);
+        enqueu(8);
+        enqueu(9);
+
+        Console.WriteLine(dequeue());
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+
+SORU: Bu problemin ikinci çözümü data movementtir. Eğer kuyrukta eleman eklemek için yer kalmamışsa yer kalmamışsa 
+veri hareketi ile mevcut elemanları dizinin başına kaydırır:
+
+using System;
+
+class Program
+{
+    static int[] queue = new int[100];
+    static int front = 0;
+    static int rear = -1;
+
+    static int elemanSayisi()
+    {
+        return rear - front + 1; 
+    }
+    static void move()
+    {
+        for (int i = 0; i < elemanSayisi(); i++)
+        {
+            queue[i] = queue[front + i];
+        }
+        front = 0;
+        rear = elemanSayisi() - 1;
+    }
+    static void enqueu(int data)
+    {
+        rear++;
+       if(rear == queue.Length)
+        {
+            move();
+            rear++;
+        }
+        queue[rear] = data;
+    }
+
+    static int dequeue()
+    {
+        int tmp = queue[front];
+        front++;
+        front = front % 10;  // Burada mod alabileceğimiz gibi kuyruğumuzu dinamik tutmak adına front = front% queue.length de yazabiliriz.
+        return tmp;
+    }
+
+
+    static void Main(string[] args)
+    {
+        enqueu(3);
+        enqueu(7);
+        enqueu(8);
+        enqueu(9);
+
+        Console.WriteLine(dequeue());
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------
+
+SORU: [500,500]'lük dizide birler ve sıfırlar vardır. 1'lerin sağında,solunda,üstünde,altında ve çaprazlarında 1 varsa bu birler bir öbek oluşturuyor. 
+Kuyruk ile en büyük öbeği bulunuz.
+
+class Program
+{
+    static int[,] matrix = new int[500, 500]; // Matris
+    static bool[,] visited = new bool[500, 500]; // Ziyaret edilen hücreler
+    static int maxClusterSize = 0; // En büyük öbek boyutu
+
+    static int[] queue = new int[500 * 500]; // Tek kuyruk (her hücreyi tek bir sayı ile temsil eder)
+    static int front = 0; // Kuyruğun başı
+    static int rear = -1; // Kuyruğun sonu
+
+    static void Main(string[] args)
+    {
+        // Matris oluştur (rastgele 1'ler ve 0'lardan)
+        Random rand = new Random();
+        for (int i = 0; i < 500; i++)
+        {
+            for (int j = 0; j < 500; j++)
+            {
+                matrix[i, j] = rand.Next(0, 2);
+            }
+        }
+
+        // Matris üzerinde tüm hücreleri tara
+        for (int i = 0; i < 500; i++)
+        {
+            for (int j = 0; j < 500; j++)
+            {
+                if (matrix[i, j] == 1 && !visited[i, j])
+                {
+                    int clusterSize = CalculateClusterSize(i, j);
+                    if (clusterSize > maxClusterSize)
+                        maxClusterSize = clusterSize;
+                }
+            }
+        }
+
+        Console.WriteLine("En büyük öbek boyutu: " + maxClusterSize);
+    }
+
+    static int CalculateClusterSize(int startX, int startY)
+    {
+        front = 0; // Kuyruğu sıfırla
+        rear = -1;
+
+        enqueu(startX, startY); // Başlangıç noktasını kuyruğa ekle
+        visited[startX, startY] = true;
+
+        int clusterSize = 0;
+
+        while (elemanSayisi() > 0) // Kuyruk boşalana kadar
+        {
+            int current = dequeue();
+            int x = current / 500; // X koordinatı
+            int y = current % 500; // Y koordinatı
+
+            clusterSize++;
+
+            // Komşuları kontrol et
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0) continue; // Kendisiyle işlem yapma
+
+                    int nx = x + dx;
+                    int ny = y + dy;
+
+                    // Geçerli koordinat ve ziyaret edilmemiş 1'ler
+                    if (nx >= 0 && nx < 500 && ny >= 0 && ny < 500 && matrix[nx, ny] == 1 && !visited[nx, ny])
+                    {
+                        enqueu(nx, ny);
+                        visited[nx, ny] = true;
+                    }
+                }
+            }
+        }
+
+        return clusterSize; // Öbek boyutunu döndür
+    }
+
+    // Kuyruk işlemleri
+    static void enqueu(int x, int y)
+    {
+        rear++;
+        queue[rear] = x * 500 + y; // X ve Y'yi tek bir sayı olarak kaydet
+    }
+
+    static int dequeue()
+    {
+        int tmp = queue[front];
+        front++;
+        return tmp;
+    }
+
+    static int elemanSayisi()
+    {
+        return rear - front + 1;
+    }
+}
+
+----------------------------------------------------------------------------------------------
+
+SORU: Yukarıdaki sorunun 2. çözümü tuples benzeri yapı ile:
+
+class Program
+{
+    static int[,] matrix = new int[500, 500]; // Matris
+    static bool[,] visited = new bool[500, 500]; // Ziyaret edilen hücreler
+    static int maxClusterSize = 0; // En büyük öbek boyutu
+
+    static (int, int)[] queue = new (int, int)[250000]; // Tek kuyruk: (X, Y) çiftleri
+    static int front = 0; // Kuyruğun başı
+    static int rear = -1; // Kuyruğun sonu
+
+    static void Main(string[] args)
+    {
+        // Matris oluştur (rastgele 1'ler ve 0'lardan)
+        Random rand = new Random();
+        for (int i = 0; i < 500; i++)
+        {
+            for (int j = 0; j < 500; j++)
+            {
+                matrix[i, j] = rand.Next(0, 2);
+            }
+        }
+
+        // Matris üzerinde tüm hücreleri tara
+        for (int i = 0; i < 500; i++)
+        {
+            for (int j = 0; j < 500; j++)
+            {
+                if (matrix[i, j] == 1 && !visited[i, j])
+                {
+                    int clusterSize = CalculateClusterSize(i, j);
+                    if (clusterSize > maxClusterSize)
+                        maxClusterSize = clusterSize;
+                }
+            }
+        }
+
+        Console.WriteLine("En büyük öbek boyutu: " + maxClusterSize);
+    }
+
+    static int CalculateClusterSize(int startX, int startY)
+    {
+        front = 0; // Kuyruğu sıfırla
+        rear = -1;
+
+        enqueu(startX, startY); // Başlangıç noktasını kuyruğa ekle
+        visited[startX, startY] = true;
+
+        int clusterSize = 0;
+
+        while (elemanSayisi() > 0) // Kuyruk boşalana kadar
+        {
+            (int x, int y) = dequeue(); // (X, Y) koordinatını kuyruğundan al
+
+            clusterSize++;
+
+            // Komşuları kontrol et
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0) continue; // Kendisiyle işlem yapma
+
+                    int nx = x + dx;
+                    int ny = y + dy;
+
+                    // Geçerli koordinat ve ziyaret edilmemiş 1'ler
+                    if (nx >= 0 && nx < 500 && ny >= 0 && ny < 500 && matrix[nx, ny] == 1 && !visited[nx, ny])
+                    {
+                        enqueu(nx, ny);
+                        visited[nx, ny] = true;
+                    }
+                }
+            }
+        }
+
+        return clusterSize; // Öbek boyutunu döndür
+    }
+
+    // Kuyruk işlemleri
+    static void enqueu(int x, int y)
+    {
+        rear++;
+        queue[rear] = (x, y); // (X, Y) çiftini kuyruğa ekle
+    }
+
+    static (int, int) dequeue()
+    {
+        var tmp = queue[front];
+        front++;
+        return tmp; // (X, Y) çiftini kuyruğundan çıkar
+    }
+
+    static int elemanSayisi()
+    {
+        return rear - front + 1;
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------
+

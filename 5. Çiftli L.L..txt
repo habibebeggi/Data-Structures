@@ -1,0 +1,707 @@
+SORU: 10 blokluk çiftli linked list oluştur ve data değerlerini ekrana yazdır.
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = new Block();
+        last.data = -1;
+        last.next = null;
+        last.prev = null;
+        for (int i = 0;i<10;i++)
+        {
+            head=new Block();
+            head.data = i;
+            head.next = last;
+            if (last != null) { last.prev = head; }
+            head.prev = null;
+            last = head;
+            if (head == null)
+            {
+                head = head; 
+            }
+        }
+        Block bl = head;
+        while(bl != null)
+        {
+            Console.WriteLine(bl.data);
+            bl = bl.next;
+        }
+    }
+
+------------------------------------------------------------------------
+
+SORU: head listenin ilk elemanına bakmaktadır. 
+İlk elemanın önüne data değeri -11 olan blok ekleyiniz.
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block bl = head;
+
+        Block tmp = new Block();
+        tmp.data = -11;
+        tmp.prev = null;
+
+        if (head == null)
+        {
+            tmp.next = null;
+            head = tmp;
+        }
+        else
+        {
+            {
+                tmp.next = head;
+                head.prev = tmp;
+                head = tmp;
+            }
+        }
+        Console.WriteLine(head.data);
+    }
+}
+
+------------------------------------------------------------------------------------
+
+SORU: Listede en çok tekrar eden elemanı bulan kod:  
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null; 
+        int[] encok = new int[1000]; 
+        Block bl = head;
+        
+        while (bl != null)
+        {
+            encok[bl.data]++;
+            bl = bl.next;
+        }
+        int encokS = 0;
+        int encokT = -1;
+
+        for (int i = 0;i<encok.Length; i++)
+        {
+            if (encok[i] > encokS)
+            {
+                encokS = encok[i];
+                encokT = i;
+            }
+        }
+
+        if(encokT != -1)
+        {
+            Console.WriteLine($"en cok tekrar eden e: {encokT}, tekrar sayısı: {encokS}");
+        }
+        else
+        {
+            Console.WriteLine("boş");
+        }
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+SORU: Listenin eleman sayısını bulan kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null; 
+        Block last= null;
+       for (int i = 0; i < 10; i++)
+        {
+            Block bl=new Block();
+           bl.data = i;
+            if (head == null) head = bl;
+            else { bl.prev = last; last.next = bl; }
+            last= bl;
+        }
+
+        int sayac = 0;
+        Block tmp = head;
+
+        while (tmp != null)
+        {
+            sayac++;
+            tmp = tmp.next;
+        }
+        Console.WriteLine($"Dizinin eleman sayısı: {sayac}");
+
+        // Elemanları yazdırma
+        tmp = head;
+        Console.WriteLine("Dizinin elemanları:");
+        while (tmp != null)
+        {
+            Console.WriteLine(tmp.data);
+            tmp = tmp.next;
+        }
+    }
+}
+
+----------------------------------------------------------------------------------------
+
+SORU: Listenin en sonuna data değeri 100 olan bir blok ekleyen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null; 
+        Block last= null;
+       for (int i = 0; i < 10; i++)
+        {
+            Block bl=new Block();
+           bl.data = i;
+            if (head == null) head = bl;
+            else { bl.prev = last; last.next = bl; }
+            last= bl;
+        }
+
+        Block temp = head;
+
+        while (temp.next != null)
+        {
+            temp = temp.next;
+        }
+        temp.next = new Block();
+        temp.next.data = 100;
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+SORU: Listenin son elemanından once datası 1000 olan blok ekleyen kod:
+
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) head = b;
+            else { b.prev = last; last.next = b; }
+            last = b;
+        }
+
+        Block tmp = head;
+        while (tmp.next != null)
+        {
+            tmp=tmp.next;   
+        }
+        Block t2 =new Block();
+        t2.data = 1000;
+        t2.prev = tmp.prev;
+        tmp.prev.next = t2;
+        t2.next = tmp;
+        tmp.prev = t2;
+
+        Block tem = head;
+        while (tem != null)
+        {
+            Console.WriteLine(tem.data);
+            tem = tem.next;
+        }
+    }
+    
+}
+
+---------------------------------------------------------------------------------------
+
+SORU: Listenin data değeri 7 olan blogundan sonra datası 3333 olan blok ekleyen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) head = b;
+            else { b.prev = last; last.next = b; }
+            last = b;
+        }
+
+        Block bl = head;
+        while(bl != null)
+        {
+            if (bl.data == 7)
+            {
+                Block tmp=new Block();
+                tmp.data = 3333;
+                tmp.next = bl.next;
+                tmp.prev = bl;
+                bl.next.prev = tmp;
+                bl.next = tmp;
+            }
+            Console.WriteLine(bl.data);
+            bl = bl.next;
+        }
+    }
+    
+}
+ 
+------------------------------------------------------------------------------
+
+SORU: Listenin data değeri 7 olan blokundan önce data değeri 3333 olan blok ekle:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) head = b;
+            else
+            {
+                b.prev = last;
+                last.next = b;
+            }
+            last = b;
+        }
+
+        Block bl = head;
+        while (bl != null)
+        {
+            if (bl.data == 7)
+            {
+                Block tmp = new Block();
+                tmp.data = 3333;
+
+                tmp.next = bl;
+                tmp.prev = bl.prev;
+                bl.prev.next = tmp;
+                bl.prev = tmp;
+                tmp.next = bl;
+            }
+            bl = bl.next;
+        }
+        bl = head;
+        while (bl != null)
+        {
+            Console.WriteLine(bl.data);
+            bl = bl.next;
+        }
+
+    }
+}
+
+------------------------------------------------------------------------------
+
+SORU: Listenin data değeri 7 olan bloğunu silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) head = b;
+            else
+            {
+                b.prev = last;
+                last.next = b;
+            }
+            last = b;
+        }
+
+        Block bl = head;
+        while (bl != null)
+        {
+            if (bl.data == 7)
+            {
+                bl.next.prev = bl.prev;
+                bl.prev.next = bl.next;
+                bl.next = null;
+                bl.prev = null;
+            }
+            bl = bl.next;
+        }
+        bl = head;
+        while (bl != null)
+        {
+            Console.WriteLine(bl.data);
+            bl = bl.next;
+        }
+
+    }
+}
+
+------------------------------------------------------------------------
+
+SORU: Listenin 7. elemanını silen kod:
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) head = b;
+            else
+            {
+                b.prev = last;
+                last.next = b;
+            }
+            last = b;
+        }
+
+        Block bl = head;
+        int sayac = 0;
+        while (sayac < 6)
+        {
+            bl = bl.next;
+            sayac++;
+        }
+        bl.prev.next = bl.next;
+        bl.next.prev = bl.prev;
+        bl.next = null;
+        bl.prev = null;
+
+        bl = head;
+        while (bl != null)
+        {
+            Console.WriteLine(bl.data);
+            bl = bl.next;
+        }
+
+    }
+}
+
+-----------------------------------------------------------------------------
+
+SORU: head listenin ilk elemanına bakmaktadır. Bu listeyi dairesel hale getiriniz.
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block block = new Block();
+            block.data = i;
+            if (head == null) { head = block; last = block; }
+            else
+            {
+                block.prev = last;
+                last.next = block;
+                last = block;
+            }
+        }
+        if(last!=null)
+        {
+            last.next = head;
+            head.prev = last;
+        }
+
+        Block mevcut = head;
+        for (int i = 0;i<20; i++)
+        {
+            Console.WriteLine(mevcut.data);
+            mevcut=mevcut.next;
+        }
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+SORU: head listenin ilk elemanına bakmaktadır. Liste içerisinde data değeri 5 olan 
+iki bloktan ikincisini silen ve her iki listeyi de ekrana basan kodu yazınız. 
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+      
+        for (int i = 0; i < 10; i++)
+        {
+            Block block = new Block { data = i };
+            if (head == null)
+            {
+                head = block;
+                last = block;
+            }
+            else
+            {
+                block.prev = last;
+                last.next = block;
+                last = block;
+            }
+        }
+
+       
+        Block fiveBlock = new Block { data = 5 };
+        last.next = fiveBlock; 
+        fiveBlock.prev = last;
+        last = fiveBlock; 
+
+    
+        Console.WriteLine("İlk liste:");
+        Block current = head;
+        while (current != null)
+        {
+            Console.Write(current.data + " ");
+            current = current.next;
+        }
+        Console.WriteLine();
+
+      
+        current = head;
+        int count = 0;
+
+        while (current != null)
+        {
+            if (current.data == 5)
+            {
+                count++;
+                if (count == 2) 
+                {
+                   
+                    if (current.prev != null) current.prev.next = current.next;
+                    if (current.next != null) current.next.prev = current.prev;
+
+                    
+                    if (current == head) head = current.next;
+
+                    break; 
+                }
+            }
+            current = current.next;
+        }
+
+       
+        Console.WriteLine("Güncellenmiş liste:");
+        current = head;
+        while (current != null)
+        {
+            Console.Write(current.data + " ");
+            current = current.next;
+        }
+        Console.WriteLine();
+    }
+}
+
+-------------------------------------------------------------------------------------
+
+SORU: Tek yönlü linked listi çift yönlüye çeviriniz: 
+
+public class Program
+{
+    public class Block
+    {
+        public int data;
+        public Block next;
+        public Block prev;
+    }
+
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+
+        // Tek yönlü bağlı liste oluşturma
+        for (int i = 0; i < 10; i++)
+        {
+            Block newBlock = new Block();
+            newBlock.data = i;
+            newBlock.next = head; // Yeni blok başa ekleniyor
+            if (head != null)
+            {
+                head.prev = newBlock; // Başka bir blok varsa, prev bağlantısını ayarlıyoruz
+            }
+            head = newBlock; // Yeni blok baş olarak ayarlanıyor
+        }
+
+        // Çift yönlü bağlantıları ayarlama
+        Block bl = head;
+        while (bl != null)
+        {
+            if (bl.next != null) // Eğer bir sonraki eleman varsa
+            {
+                bl.next.prev = bl; // Önceki bağlantıyı ayarla
+            }
+            bl = bl.next; // Bir sonraki elemana geç
+        }
+
+        // Çift yönlü listeyi yazdırma
+        Console.WriteLine("Çift yönlü liste:");
+        bl = head; // Başlangıçtan başlayarak yazdırma
+        while (bl != null)
+        {
+            Console.Write(bl.data + " ");
+            bl = bl.next; // Sonraki elemana geç
+        }
+        Console.WriteLine();
+    }
+}
+
+----------------------------------------------------------------------------------------
+
+SORU: Bozulmuş çiftli linked listin bozulan yönünü ve elemanını bulan kod:
+using System;
+using System.Timers;
+
+class Block
+{
+    public int data;
+    public Block next;
+    public Block prev;
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Block head = null;
+        Block last = null;
+        int elemansayısı = 0;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Block b = new Block();
+            b.data = i;
+            if (head == null) { head = b; }
+            else { last.next = b; b.prev = last; }
+            last = b;
+            elemansayısı++;
+        }
+
+        if (head?.next?.next?.next != null)
+        {
+            head.next.next.next = null;
+        }
+
+        Block bas = head;
+        Block son = last;
+        int bSayac = 0, sSayac = 0;
+        while (bas != null || son != null)
+        {
+            if (bas != null) { bSayac++; bas = bas.next; }
+            if (son != null) { sSayac++; son = son.prev; }
+        }
+
+        if(elemansayısı!=bSayac) Console.WriteLine("bastan: "+ (bSayac+1)+ " elemanın nexti hatalı");
+        else if (elemansayısı != sSayac) Console.WriteLine("sondan: "+ (sSayac+1)+ " elemanın previ hatalı");
+        else Console.WriteLine("hata yok");
+    }
+}
+
+------------------------------------------------------------------------------------------
+

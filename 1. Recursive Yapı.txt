@@ -1,0 +1,139 @@
+ static int Faktoriyel(int a)
+ {
+     if (a == 0) return 1;
+     return a * Faktoriyel(a - 1);
+ }
+
+ static int Fibonacci(int a)
+ {
+     if (a == 1 || a == 0) return 1;
+     return Fibonacci(a - 1) + Fibonacci(a - 2);
+ }
+
+ static int UsAl(int taban, int us)
+ {
+     if (us == 0) return 1;
+     return taban * UsAl(taban, us - 1);
+ }
+
+ static int Tribonacci(int a)
+ {
+     if (a == 0) return 0;
+     if (a == 1 || a == 2) return 1;
+     return Tribonacci(a - 1) + Tribonacci(a - 2) + Tribonacci(a - 3);
+ }
+
+ static bool AsalMi(int a)
+ {
+     int sayac = 0;
+     if (a == 0 || a == 1) Console.WriteLine("En küçük asal 2");
+     for (int i = 2; i < (a / 2); i++)
+     {
+         if (a % i == 0) sayac++;
+     }
+     if (sayac >= 1) return false;
+     else return true;
+
+ }
+
+ static int Topla1den100e(int a)
+ {
+     //1'den 100' e kadar olan sayıların toplamını verir.
+     if (a > 100) return 0;
+     return a + Topla1den100e(a + 1);
+
+ }
+
+ static int TekCiftToplam(int a)
+ {
+     //a= 0 --> 1'den 100' e çiftler top. a=1 --> 1'den 100' e tekler top.
+     if (a > 100) return 0;
+     return a + TekCiftToplam(a + 2);
+ }
+
+ static void TerstenYazdir(int a)
+ {
+     //24 ve 25. satırlar yer değiştirirse normal şekilde yazdırır.
+     if (a > 10) return;
+     TerstenYazdir(a + 1);
+     Console.WriteLine(a);
+ }
+
+ static int DiziToplaminiBul(int[] x, int a)
+ {
+     //Verilen dizinin elemanları toplamını bulur.
+     if (a >= x.Length) return 0;
+     return x[a] + DiziToplaminiBul(x, a + 1);
+ }
+
+ static int eb = 0;
+ static int EBElemaniBul(int[] x, int a)
+ {
+     if (a >= x.Length) return eb;
+     if (eb < x[a]) eb = x[a];
+     return EBElemaniBul(x, a + 1);
+ }
+
+ static int Convert(string s, int a)
+ {
+     // Verilen stringi inte cevirir.
+     if (a < 0) return 0;
+     return s[a] - (byte)'0' + 10 * Convert(s, a - 1);
+ }
+
+ static int ToplamNew(int a)
+ {
+     // 1-2+3-4+5-6+...+99-100 toplamını verir.
+     if (a >= 101) return 0;
+     return a - ToplamNew(a + 1);
+ }
+
+ static void For(int hedef, int n = 0)
+ {
+     if (n == hedef) return;
+     Console.WriteLine(n);
+     For(hedef, ++n);
+ }
+
+ static void For2(int hedef, int n = 0)
+ {
+     while (n != hedef)
+     {
+         Console.WriteLine(n);
+         n = ++n;
+     }
+ }
+
+ static void DosyaListele(string dizin)
+ {
+     var st = new Stack<string>();
+     st.Push(dizin);
+     while (st.Any())
+     {
+         var mevcutDizin = st.Pop();
+         foreach (var dosya in Directory.GetFiles(mevcutDizin))
+         {
+             Console.WriteLine(dosya);
+         }
+         foreach (var altDizin in Directory.GetDirectories(mevcutDizin))
+         {
+             st.Push(altDizin);
+         }
+     }
+ }
+
+ static void Main(string[] args)
+ {
+     Console.WriteLine(Topla(0));
+     Console.WriteLine(TekCiftToplam(1));
+     TerstenYazdir(0);
+     int[] x = new int[] {78,89,63,32,25,45 };
+     x[0] = 78; x[1] = 89; x[2] = 32; x[3] = 25; x[4] = 45;
+     Console.WriteLine(DiziToplaminiBul(x, 0));
+     Console.WriteLine(EBElemaniBul(x, 0));
+     string s = "abcdd";
+     Console.WriteLine(Convert(s,s.Length-1));
+     Console.WriteLine(AsalMi(987));
+     DosyaListele("C:\\Users\\beggi\\Desktop\\Projects\\Not - genel");
+
+ }
