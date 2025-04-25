@@ -4,4 +4,4 @@ This folder contains sample codes from the Data Structures course of the Compute
 
 # TR:
 
-Bu klasörde Kırıkkale Üniversitesi Bilgisayar Mühendisliği Bölümü Veri Yapıları dersinden örnek kodlar bulunmaktadır. Son dört yılda işlenen kodlar, örnek çözümler de dikkate alınarak daha anlaşılır hale getirildi.
+Bu klasörde Kırıkkale Üniversitesi Bilgisayar Mühendisliği Bölümü Veri Yapıları dersinden örnek kodlar bulunmaktadır. Son dört yılda işlenen kodlar, örnek çözümler de dikkate alınarak daha anlaşılır hale getirilmiştir.
